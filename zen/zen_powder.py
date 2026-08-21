@@ -28,7 +28,7 @@ import os
 import random
 
 PRODUCT = "potassium"
-SCRIPT_VERSION = "powder-v2"
+SCRIPT_VERSION = "powder-v3"
 
 # ---- 연출 값 ---------------------------------------------------------------
 FPS = 24
@@ -159,7 +159,7 @@ def mat_plain(name, color, rough=0.6, metal=0.0):
     return mat
 
 
-POWDER = (0.95, 0.94, 0.92, 1.0)
+POWDER = (0.84, 0.83, 0.80, 1.0)
 
 
 # ---- 스틱포 (뜯어진 입구, 오른쪽으로 붓는 방향) ------------------------------
@@ -436,7 +436,7 @@ def build_studio():
         if kind == "SPOT":
             d.spot_size = math.radians(55)
             d.spot_blend = 0.6
-            d.shadow_soft_size = 0.04
+            d.shadow_soft_size = 0.09
         o = bpy.data.objects.new(name, d)
         o.location = loc
         o.rotation_euler = rot
@@ -444,19 +444,19 @@ def build_studio():
 
     # 키 스포트 (위 오른쪽에서 더미를 향해)
     light("SPOT", "KeySpot", (0.10, -0.14, 0.30),
-          (math.radians(28), math.radians(18), math.radians(15)), 28.0)
+          (math.radians(28), math.radians(18), math.radians(15)), 4.5)
     # 뒤 백라이트: 가루 줄기가 빛나 보이게
     light("AREA", "Back", (0.02, 0.20, 0.16),
-          (math.radians(115), 0, 0), 6.0, size=0.35)
+          (math.radians(115), 0, 0), 0.9, size=0.35)
     # 약한 필
     light("AREA", "Fill", (-0.16, -0.12, 0.10),
-          (math.radians(75), 0, math.radians(-45)), 1.2, size=0.4)
+          (math.radians(75), 0, math.radians(-45)), 0.35, size=0.4)
 
     # 바닥: 짙은 무광 (스포트라이트 웅덩이가 생김)
-    bpy.ops.mesh.primitive_plane_add(size=1.2, location=(0, 0, 0))
+    bpy.ops.mesh.primitive_plane_add(size=5.0, location=(0, 0.6, 0))
     g = bpy.context.object
     g.name = "Ground"
-    g.data.materials.append(mat_plain("GroundDark", (0.045, 0.040, 0.036, 1), 0.75))
+    g.data.materials.append(mat_plain("GroundDark", (0.050, 0.045, 0.040, 1), 0.9))
 
 
 def build_camera():
@@ -494,7 +494,10 @@ def setup_render(res, samples):
     sc.render.image_settings.file_format = "PNG"
     sc.render.image_settings.color_mode = "RGBA"
     sc.render.image_settings.color_depth = "16"
-    sc.view_settings.view_transform = "Standard"
+    try:
+        sc.view_settings.view_transform = "Filmic"   # 하이라이트 부드럽게
+    except Exception:
+        sc.view_settings.view_transform = "Standard"
     sc.view_settings.look = "None"
 
 
@@ -533,7 +536,7 @@ def build_frame_scene(t, stick, L_torn, mat_powder):
         make_grain_cloud("mist", mist, GRAIN_MM * MM * 0.6, mat_powder)
     sc_pts = scatter_positions(t)
     if sc_pts:
-        make_grain_cloud("scatter", sc_pts, GRAIN_MM * MM * 1.3, mat_powder)
+        make_grain_cloud("scatter", sc_pts, GRAIN_MM * MM * 0.95, mat_powder)
     surf = pile_surface_grains(t)
     if surf:
         make_grain_cloud("psurf", surf, GRAIN_MM * MM * 1.2, mat_powder)
