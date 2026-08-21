@@ -227,7 +227,7 @@ def build_tray(mats):
     # 왼쪽 벽 (관찰자 -X). 텍스처는 세로형(37.5 x 85):
     #   이미지 u: 왼쪽=벽 위, 오른쪽=벽 아래 / 이미지 v: 아래=앞, 위=뒤
     def uv_sl(y, z):
-        return ((z - Z_B) / H, (Y_B - y) / D)
+        return ((z - Z_B) / H, (y - Y_F) / D)
     b.quad([(X_L, Y_F, Z_B), (X_L, Y_B, Z_B), (X_L, Y_B, Z_T), (X_L, Y_F, Z_T)],
            M_SIDE_L, [uv_sl(Y_F, Z_B), uv_sl(Y_B, Z_B),
                       uv_sl(Y_B, Z_T), uv_sl(Y_F, Z_T)], flip=True)
@@ -236,7 +236,7 @@ def build_tray(mats):
 
     # 오른쪽 벽 (관찰자 +X): 이미지 u: 왼쪽=벽 아래, 오른쪽=벽 위
     def uv_sr(y, z):
-        return ((Z_T - z) / H, (Y_B - y) / D)
+        return ((Z_T - z) / H, (y - Y_F) / D)
     b.quad([(X_R, Y_B, Z_B), (X_R, Y_F, Z_B), (X_R, Y_F, Z_T), (X_R, Y_B, Z_T)],
            M_SIDE_R, [uv_sr(Y_B, Z_B), uv_sr(Y_F, Z_B),
                       uv_sr(Y_F, Z_T), uv_sr(Y_B, Z_T)], flip=True)
