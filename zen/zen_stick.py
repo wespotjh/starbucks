@@ -101,13 +101,20 @@ LIGHT_POWER = 0.1
 #           1.0 미만으로 내리면 넘쳐서 가장자리에 줄무늬가 생깁니다.
 UV_SCALE = 1.10
 
-# AUTO_CENTER  텍스처 파일 안에서 그래픽이 한쪽으로 치우쳐 있어도
-#              잉크 영역(흰 배경이 아닌 부분)의 가로 중심을 재서
-#              렌더에서는 면 중앙에 오도록 자동 보정합니다.
-#              쏠림의 원인은 지오메트리가 아니라 PNG 안의 여백 비대칭입니다.
-AUTO_CENTER = True
+# AUTO_FIT  실물 누끼와 렌더를 맞추기 위한 자동 보정입니다.
+#           텍스처 PNG 안의 잉크 영역(흰 배경이 아닌 부분)을 재서
+#             1) 면 중앙에 정렬하고
+#             2) 그래픽 전체 가로폭이 PRINT_SPAN_MM 이 되도록 배율을 맞춥니다.
+#           PNG 에 여백이 얼마나 들어 있든 결과가 같아지므로
+#           쏠림 문제와 "그래픽이 실물보다 작다" 문제가 함께 사라집니다.
+AUTO_FIT = True
 
-# UV_OFFSET_X_MM  자동 보정 후에도 미세하게 어긋나면 여기서 조정합니다.
+# PRINT_SPAN_MM  그래픽(로고 끝~절취선)의 실물 가로 길이.
+#                실물 누끼 기준: 인쇄면 88mm 를 거의 가득 채워 약 84mm.
+#                렌더가 실물보다 그래픽이 작으면 이 값을 키우세요.
+PRINT_SPAN_MM = 84.0
+
+# UV_OFFSET_X_MM  자동 맞춤 후에도 미세하게 어긋나면 여기서 조정합니다.
 #                 단위는 mm. +1.0 이면 그래픽이 오른쪽으로 1mm 이동합니다.
 UV_OFFSET_X_MM = 0.0
 
@@ -233,17 +240,17 @@ def load_tex(filename):
     return img
 
 
-def ink_center_u(img):
+def ink_bbox(img):
     """
-    텍스처에서 잉크(흰 배경이 아닌 픽셀)의 가로 중심을 0~1로 반환.
-    양끝 여백이 비대칭인 파일이면 이 값이 0.5에서 벗어나고,
-    그 차이만큼 머티리얼에서 되밀어 면 중앙에 정렬한다.
-    측정 실패 시 None (그 경우 보정 없이 진행).
+    텍스처에서 잉크(흰 배경이 아닌 픽셀)의 경계 상자를 잰다.
+    PNG 안에서 그래픽이 어디에 얼마나 크게 들어 있는지 알아야
+    중앙 정렬과 실물 크기 맞춤을 할 수 있다.
+    반환: {u0, u1, v0, v1, px_aspect}  (0~1 정규화, 실패 시 None)
     """
     try:
         import numpy as np
     except ImportError:
-        print("  [알림] numpy 가 없어 자동 중앙 정렬을 건너뜁니다")
+        print("  [알림] numpy 가 없어 자동 맞춤을 건너뜁니다")
         return None
     w, h = img.size
     if w == 0 or h == 0:
@@ -254,9 +261,14 @@ def ink_center_u(img):
     # pixels 는 리니어 값. sRGB 0.92 백색이 리니어로 약 0.83이라 0.80 기준.
     ink = (px[..., :3].min(axis=-1) < 0.80) & (px[..., 3] > 0.5)
     cols = np.where(ink.sum(axis=0) >= 2)[0]   # 낱개 노이즈 픽셀 무시
-    if cols.size == 0:
+    rows = np.where(ink.sum(axis=1) >= 2)[0]
+    if cols.size == 0 or rows.size == 0:
         return None
-    return float(cols[0] + cols[-1] + 1) / (2.0 * w)
+    return {
+        "u0": cols[0] / w, "u1": (cols[-1] + 1) / w,
+        "v0": rows[0] / h, "v1": (rows[-1] + 1) / h,
+        "px_aspect": w / h,
+    }
 
 
 # =============================================================================
@@ -283,18 +295,32 @@ def mat_printed(name, image):
     tex.interpolation = "Cubic"      # 글자 선명도의 핵심
     tex.extension = "EXTEND"
 
-    # --- 가로 중앙 정렬 ------------------------------------------------------
-    # UV 는 지오메트리 기준으로 완전 대칭이므로, 렌더에서 보이는 쏠림은
-    # 텍스처 파일 안의 좌우 여백 비대칭이다. 잉크 중심을 재서 되민다.
+    # --- 그래픽 자동 맞춤 ----------------------------------------------------
+    # UV 는 지오메트리 기준으로 완전 대칭이므로, 쏠림도 크기 차이도 전부
+    # PNG 안의 여백에서 온다. 잉크 경계 상자를 재서
+    #   1) 가로·세로 중앙 정렬
+    #   2) 그래픽 가로폭을 실물 기준 PRINT_SPAN_MM 로 확대
+    # 를 한 번에 처리한다. 세로는 글자가 늘어나지 않도록 같은 배율을 쓴다.
     # 뒷면은 UV 를 0.5 기준으로 미러하므로 같은 보정이 그대로 통한다.
-    off = -(UV_OFFSET_X_MM / LENGTH) / UV_SCALE
-    if AUTO_CENTER:
-        c = ink_center_u(image)
-        if c is not None:
-            off += (c - 0.5)
-            print(f"  [{name}] 잉크 중심 u={c:.3f} → "
-                  f"{(0.5 - c) * LENGTH * UV_SCALE:+.1f}mm 이동, 중앙 정렬")
-    mapping.inputs["Location"].default_value = (off, 0.0, 0.0)
+    sx = sy = 1.0
+    lx = -(UV_OFFSET_X_MM / LENGTH) / UV_SCALE
+    ly = 0.0
+    bb = ink_bbox(image) if AUTO_FIT else None
+    if bb:
+        wu = bb["u1"] - bb["u0"]                    # 잉크 폭 (이미지 u 단위)
+        cu = (bb["u0"] + bb["u1"]) * 0.5
+        cv = (bb["v0"] + bb["v1"]) * 0.5
+        # 매핑 노드는 s = uv * scale + location 으로 샘플 좌표를 만든다.
+        # 면 위 x[mm] 가 이미지의 (중심 cu, 폭 wu → PRINT_SPAN_MM) 에
+        # 대응하도록 배율과 위치를 역산한 값이다.
+        sx = wu * LENGTH * UV_SCALE / PRINT_SPAN_MM
+        sy = wu * WIDTH * UV_SCALE * bb["px_aspect"] / PRINT_SPAN_MM
+        lx = cu - 0.5 * sx - UV_OFFSET_X_MM * wu / PRINT_SPAN_MM
+        ly = cv - 0.5 * sy
+        print(f"  [{name}] 잉크 폭 {wu * LENGTH * UV_SCALE:.1f}mm → "
+              f"{PRINT_SPAN_MM:.0f}mm 로 확대, 중앙 정렬")
+    mapping.inputs["Location"].default_value = (lx, ly, 0.0)
+    mapping.inputs["Scale"].default_value = (sx, sy, 1.0)
 
     nt.links.new(coord.outputs["UV"], mapping.inputs["Vector"])
     nt.links.new(mapping.outputs["Vector"], tex.inputs["Vector"])
@@ -613,7 +639,9 @@ def main():
         print("   너무 어둡고 형태가 잘 안 보인다 → LIGHT_POWER 를 2.0 으로")
         print("   글자가 뒤집혀 보인다            → 알려주세요. UV 를 뒤집습니다.")
         print("   그래픽이 아직 좌우로 치우쳤다   → UV_OFFSET_X_MM 을 조절하세요.")
-        print("                                     (+1.0 = 오른쪽으로 1mm)\n")
+        print("                                     (+1.0 = 오른쪽으로 1mm)")
+        print("   그래픽이 실물보다 작다/크다     → PRINT_SPAN_MM 을 조절하세요.")
+        print("                                     (실물 기준 84mm)\n")
     else:
         # 키프레임을 쓰지 않습니다.
         # Blender 4.4 부터 Action 구조가 바뀌어 action.fcurves 가 사라졌습니다.
