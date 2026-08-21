@@ -276,15 +276,19 @@ def build_lid(mats):
     b.quad([(xl, yf + T, z0), (xr, yf + T, z0),
             (xr, yf + T, zt), (xl, yf + T, zt)], M_WHITE)
 
-    # 옆 스커트 (거의 무지)
+    # 옆 더스트플랩: 몸통 안쪽으로 접혀 들어가는 작은 무지 플랩.
+    # 바깥에서는 인쇄된 옆벽이 보여야 하므로 벽 안쪽에 배치한다.
+    # 도면 실측: 뚜껑 앞모서리에서 24.1~61.8mm 구간, 깊이 37.5mm.
+    fy0 = Y_F + 24.1 * MM
+    fy1 = Y_F + 61.8 * MM
     for sx, m in ((-1, M_SKIRT_L), (1, M_SKIRT_R)):
-        x = xl if sx < 0 else xr
-        b.quad([(x, yf, z0), (x, yb, z0), (x, yb, zt), (x, yf, zt)],
+        x = sx * (W / 2 - T - 0.3 * MM)
+        b.quad([(x, fy0, z0), (x, fy1, z0), (x, fy1, zt), (x, fy0, zt)],
                m, [(0, 0), (1, 0), (1, 1), (0, 1)],
-               flip=(sx < 0))
-        xi = x + sx * (-T)
-        b.quad([(xi, yf, z0), (xi, yb, z0), (xi, yb, zt), (xi, yf, zt)],
-               M_WHITE, flip=(sx > 0))
+               flip=(sx > 0))
+        xi = x - sx * T
+        b.quad([(xi, fy0, z0), (xi, fy1, z0), (xi, fy1, zt), (xi, fy0, zt)],
+               M_WHITE, flip=(sx < 0))
 
     return b.to_object(mats)
 
