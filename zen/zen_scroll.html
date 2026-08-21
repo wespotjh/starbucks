@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zengenetics — 스크롤 시퀀스 프로토타입</title>
+<style>
+  :root{
+    --navy:#1e3a8a; --ink:#22315e; --accent:#f26b35;
+    --bg:#ffffff; --soft:#f5f6f8;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);
+       font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif}
+  .hero{height:92vh;display:flex;flex-direction:column;justify-content:center;
+        align-items:center;text-align:center;gap:18px}
+  .hero h1{color:var(--navy);font-size:clamp(36px,6vw,64px);letter-spacing:-.02em}
+  .hero p{color:#6b7590;font-size:15px}
+  .hero .hint{margin-top:30px;font-size:13px;color:#9aa3ba;animation:bob 1.6s infinite}
+  @keyframes bob{50%{transform:translateY(6px)}}
+
+  section.seq{position:relative}
+  section.seq .track{height:320vh}
+  section.seq .stage{position:sticky;top:0;height:100vh;display:flex;
+        flex-direction:column;justify-content:center;align-items:center;gap:10px;
+        overflow:hidden}
+  .stage img{max-width:min(78vw,640px);max-height:70vh;object-fit:contain}
+  .stage .label{color:var(--navy);font-weight:700;font-size:clamp(20px,3vw,30px)}
+  .stage .sub{color:#8a93ab;font-size:13px}
+  .stage .missing{color:#b8bfd2;font-size:14px;border:1px dashed #d5dae6;
+        padding:26px 34px;border-radius:14px;line-height:1.7;text-align:center}
+  .stage .bar{width:min(60vw,420px);height:3px;background:#e8ebf2;border-radius:2px;
+        overflow:hidden}
+  .stage .bar i{display:block;height:100%;width:0;background:var(--accent);
+        transition:width .1s linear}
+  section.alt .stage{background:var(--soft)}
+  footer{padding:80px 20px;text-align:center;color:#9aa3ba;font-size:13px}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Zengenetics™</h1>
+  <p>스크롤을 내리면 제품이 움직입니다 — 렌더 프레임 스크럽 프로토타입</p>
+  <div class="hint">▼ scroll</div>
+</div>
+
+<div id="sections"></div>
+
+<footer>zen_scroll.html — 프레임은 zen/webp/ (없으면 zen/render/ png) 에서 로드합니다</footer>
+
+<script>
+/* ── 시퀀스 목록 ─────────────────────────────────────────────
+   dir: webp/<dir>/frame_0001.webp … 없으면 render/<dir>/frame_0001.png */
+const SEQS = [
+  {dir:"potassium_stick",      n:36, label:"포타슘 스틱",          sub:"턴테이블"},
+  {dir:"potassium_day6_turn",  n:36, label:"데일리팩 6입",         sub:"턴테이블"},
+  {dir:"potassium_day6_open",  n:24, label:"데일리팩 개봉",        sub:"플립톱 140°"},
+  {dir:"potassium_box20_turn", n:36, label:"정품 박스 20포",       sub:"턴테이블"},
+  {dir:"potassium_box20_open", n:24, label:"정품 박스 개봉",       sub:"뚜껑 100°"},
+  {dir:"magnesium_stick",      n:36, label:"마그네슘 스틱",        sub:"턴테이블"},
+  {dir:"vitaminb_stick",       n:36, label:"비타민B 스틱",         sub:"턴테이블"},
+];
+
+const pad = i => String(i).padStart(4, "0");
+
+function makeSection(seq, idx){
+  const sec = document.createElement("section");
+  sec.className = "seq" + (idx % 2 ? " alt" : "");
+  sec.innerHTML = `
+    <div class="track"></div>
+    <div class="stage">
+      <div class="label">${seq.label}</div>
+      <div class="sub">${seq.sub}</div>
+      <img alt="${seq.label}" style="display:none">
+      <div class="missing" style="display:none">
+        아직 프레임이 없습니다<br>
+        <b>${seq.dir}</b> — Blender 렌더 후 zen_webp.py 를 실행하세요
+      </div>
+      <div class="bar"><i></i></div>
+    </div>`;
+  document.getElementById("sections").appendChild(sec);
+  return sec;
+}
+
+function loadSeq(seq, onframe){
+  // webp 우선, 실패하면 png 로 폴백. 로드된 Image 배열을 넘긴다.
+  const frames = new Array(seq.n).fill(null);
+  let loaded = 0, failed = 0, usePng = false;
+
+  function tryLoad(i, png){
+    const img = new Image();
+    img.onload = () => { frames[i] = img; loaded++; onframe(loaded, seq.n); };
+    img.onerror = () => {
+      if (!png) { tryLoad(i, true); }        // webp 실패 → png 시도
+      else { failed++; onframe(loaded, seq.n); }
+    };
+    img.src = (png ? `render/${seq.dir}/frame_${pad(i+1)}.png`
+                   : `webp/${seq.dir}/frame_${pad(i+1)}.webp`);
+  }
+  for (let i = 0; i < seq.n; i++) tryLoad(i, false);
+  return frames;
+}
+
+SEQS.forEach((seq, idx) => {
+  const sec = makeSection(seq, idx);
+  const img = sec.querySelector("img");
+  const missing = sec.querySelector(".missing");
+  const bar = sec.querySelector(".bar i");
+  let ready = false;
+
+  const frames = loadSeq(seq, (loaded, total) => {
+    if (loaded > 0 && !ready){ ready = true; missing.style.display = "none"; }
+  });
+
+  // 로드 실패 감지 (1.5초 후에도 한 장도 없으면 안내)
+  setTimeout(() => {
+    if (!frames.some(f => f)) { missing.style.display = "block"; }
+  }, 1500);
+
+  function update(){
+    const r = sec.getBoundingClientRect();
+    const total = r.height - innerHeight;
+    const t = Math.min(Math.max(-r.top / total, 0), 1);
+    bar.style.width = (t * 100).toFixed(1) + "%";
+    const fi = Math.min(seq.n - 1, Math.floor(t * seq.n));
+    // 아직 안 불러온 프레임이면 가장 가까운 로드된 프레임 사용
+    let f = frames[fi];
+    if (!f){
+      for (let d = 1; d < seq.n && !f; d++){
+        f = frames[fi - d] || frames[fi + d];
+      }
+    }
+    if (f){ img.src = f.src; img.style.display = "block"; }
+  }
+  addEventListener("scroll", update, {passive:true});
+  addEventListener("resize", update);
+  update();
+});
+</script>
+</body>
+</html>
