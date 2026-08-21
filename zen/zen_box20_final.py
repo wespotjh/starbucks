@@ -1,13 +1,13 @@
 """
 =============================================================================
- zen_box20.py — 젠제네틱스 정품 박스(20포) 텅스터 지기 확인 렌더
+ zen_box20_final.py — 젠제네틱스 정품 박스(20포) 최종 실행판
 =============================================================================
 
  ★ 아무것도 고치지 않아도 됩니다. 열어서 ▶ 만 누르세요.
-   확인용 3장을 렌더합니다:
-     check_box20_closed_front.png   닫힌 상태 앞 3/4
-     check_box20_closed_back.png    닫힌 상태 뒤 3/4
-     check_box20_open.png           뚜껑 100도 개봉
+   두 가지 시퀀스를 자동으로 렌더합니다:
+     render/potassium_box20_turn/  닫힌 상태 턴테이블 36장
+     render/potassium_box20_open/  뚜껑 0→100도 개봉 24장
+   중간에 꺼져도 다시 실행하면 만든 프레임은 건너뛰고 이어서 돌아갑니다.
 
  실행 방법
    1. 이 파일을 zen 폴더에 넣습니다 (textures 폴더 옆)
@@ -33,7 +33,9 @@ import math
 import os
 
 PRODUCT = "potassium"
-SCRIPT_VERSION = "box20-check"
+SCRIPT_VERSION = "box20-final"
+TURN_FRAMES = 36
+OPEN_FRAMES = 24
 
 # ---- 치수 (mm) --------------------------------------------------------------
 BOX_W = 116.0    # 가로 (x)
@@ -409,23 +411,47 @@ def main():
     cam, tgt = build_camera(size)
     sc = bpy.context.scene
 
-    def shot(name, rot_z_deg):
+    import time
+    t0 = time.time()
+    total = TURN_FRAMES + OPEN_FRAMES
+    done = [0]
+
+    def seq_shot(path, rot_z_deg):
+        done[0] += 1
+        if os.path.exists(path):
+            print(f"  [{done[0]:>3}/{total}] 이미 있음, 건너뜀")
+            return
         for o in parts:
             o.rotation_euler = (0, 0, math.radians(rot_z_deg))
-        sc.render.filepath = os.path.join(OUT_DIR, name)
+        sc.render.filepath = path
         bpy.ops.render.render(write_still=True)
-        print(f"  저장됨: {sc.render.filepath}")
+        el = time.time() - t0
+        eta = el / done[0] * (total - done[0])
+        print(f"  [{done[0]:>3}/{total}]  경과 {el/60:.1f}분  남은시간 약 {eta/60:.1f}분")
 
+    # 1) 닫힌 상태 턴테이블
+    d = os.path.join(OUT_DIR, f"{PRODUCT}_box20_turn")
+    os.makedirs(d, exist_ok=True)
+    print(f"\n  [1/2] 턴테이블 {TURN_FRAMES}장 → {d}")
+    set_lid_angle(lid, lid_base, 0)
     aim_camera(cam, tgt, size, high=False)
-    shot("check_box20_closed_front.png", 25)
-    shot("check_box20_closed_back.png", 155)
+    for i in range(TURN_FRAMES):
+        seq_shot(os.path.join(d, f"frame_{i+1:04d}.png"), 360.0 * i / TURN_FRAMES)
 
-    set_lid_angle(lid, lid_base, LID_OPEN_DEG)
+    # 2) 개봉 시퀀스 (카메라 높임, 완급 곡선)
+    d = os.path.join(OUT_DIR, f"{PRODUCT}_box20_open")
+    os.makedirs(d, exist_ok=True)
+    print(f"\n  [2/2] 개봉 시퀀스 {OPEN_FRAMES}장 → {d}")
     aim_camera(cam, tgt, size, high=True)
-    shot("check_box20_open.png", 25)
+    for i in range(OPEN_FRAMES):
+        t = i / (OPEN_FRAMES - 1)
+        ease = t * t * (3 - 2 * t)
+        set_lid_angle(lid, lid_base, LID_OPEN_DEG * ease)
+        seq_shot(os.path.join(d, f"frame_{i+1:04d}.png"), 25)
 
-    print("\n  3장 완료. render 폴더의 check_box20_*.png 를 확인하세요.")
-    print("  괜찮으면 다음 버전에서 턴테이블 + 개봉 시퀀스로 갑니다.\n")
+    print("\n  전부 완료!")
+    print(f"  턴테이블 : render/{PRODUCT}_box20_turn/  ({TURN_FRAMES}장)")
+    print(f"  개봉     : render/{PRODUCT}_box20_open/  ({OPEN_FRAMES}장)\n")
 
 
 main()
