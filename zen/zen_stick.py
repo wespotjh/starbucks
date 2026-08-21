@@ -49,6 +49,11 @@ from mathutils import Vector
 
 PRODUCT = "potassium"      # "potassium" / "magnesium" / "vitaminb"
 
+# 지금 실행되는 코드가 최신인지 확인하는 표식입니다.
+# 콘솔 배너와 결과 파일명에 붙습니다. 결과 파일명에 v3 이 없으면
+# Blender 가 옛날 코드를 돌리고 있는 것입니다 (아래 실행 방법 참조).
+SCRIPT_VERSION = "v3"
+
 
 def _base_dir():
     """
@@ -306,7 +311,11 @@ def mat_printed(name, image):
     lx = -(UV_OFFSET_X_MM / LENGTH) / UV_SCALE
     ly = 0.0
     bb = ink_bbox(image) if AUTO_FIT else None
+    if AUTO_FIT and bb is None:
+        print(f"  [경고] [{name}] 잉크 영역을 찾지 못해 보정 없이 진행합니다")
     if bb:
+        print(f"  [{name}] 잉크 영역  가로 {bb['u0']:.1%}~{bb['u1']:.1%}"
+              f"  세로 {bb['v0']:.1%}~{bb['v1']:.1%}")
         wu = bb["u1"] - bb["u0"]                    # 잉크 폭 (이미지 u 단위)
         cu = (bb["u0"] + bb["u1"]) * 0.5
         cv = (bb["v0"] + bb["v1"]) * 0.5
@@ -603,7 +612,7 @@ def main():
     os.makedirs(OUT_DIR, exist_ok=True)
 
     print("=" * 66)
-    print(f"  Zengenetics 스틱포  |  {PRODUCT}  |  {MODE}")
+    print(f"  Zengenetics 스틱포  |  {PRODUCT}  |  {MODE}  |  코드 {SCRIPT_VERSION}")
     print(f"  {cfg['res']}px / {cfg['samples']} samples / {cfg['frames']} frames")
     print(f"  텍스처 폴더: {TEX_DIR}")
     print(f"  출력 폴더  : {OUT_DIR}")
@@ -623,12 +632,12 @@ def main():
         # 확인용: 살짝 비스듬한 각도 한 장
         if MODE == "CHECK_BACK":
             obj.rotation_euler = (0, 0, math.radians(180))
-            name = f"check_{PRODUCT}_stick_BACK.png"
+            name = f"check_{PRODUCT}_stick_BACK_{SCRIPT_VERSION}.png"
         else:
             # 정면. 비스듬히 보면 한쪽 크림프가 뒤로 돌아가
             # 좌우 여백이 달라 보여 중앙 정렬을 판단할 수 없습니다.
             obj.rotation_euler = (0, 0, 0)
-            name = f"check_{PRODUCT}_stick.png"
+            name = f"check_{PRODUCT}_stick_{SCRIPT_VERSION}.png"
         sc.render.filepath = os.path.join(OUT_DIR, name)
         bpy.ops.render.render(write_still=True)
         print(f"\n  저장됨: {sc.render.filepath}")
