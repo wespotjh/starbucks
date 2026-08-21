@@ -444,13 +444,14 @@ def build_camera(s):
 
 
 def aim_camera(cam, tgt, s, high=False):
-    """개봉 장면은 카메라를 올려 내려다보게 해 이너프레임이 보이게 한다."""
+    """닫힌 컷도 실물 촬영처럼 살짝 내려다봐서 상단 주황 면이 보이게 한다.
+    개봉 장면은 더 올려 이너프레임과 내부가 보이게 한다."""
     if high:
         cam.location = (0, -s * 2.9, s * 0.85)
         tgt.location = (0, 0, s * 0.12)
     else:
-        cam.location = (0, -s * 3.2, s * 0.35)
-        tgt.location = (0, 0, 0)
+        cam.location = (0, -s * 3.1, s * 0.72)
+        tgt.location = (0, 0, s * 0.04)
 
 
 def setup_render(res, samples):
