@@ -32,7 +32,8 @@ import bmesh
 import math
 import os
 
-PRODUCT = "potassium"
+PRODUCT = "potassium"   # 실행 중 자동으로 바뀝니다
+PRODUCTS = ["potassium", "magnesium", "vitaminb"]
 SCRIPT_VERSION = "box20-final"
 TURN_FRAMES = 36
 OPEN_FRAMES = 24
@@ -381,81 +382,86 @@ def setup_render(res, samples):
 # ---- 메인 -------------------------------------------------------------------
 
 def main():
+    global PRODUCT
     os.makedirs(OUT_DIR, exist_ok=True)
-    print("=" * 66)
-    print(f"  Zengenetics 정품 박스(20포)  |  {PRODUCT}  |  {SCRIPT_VERSION}")
-    print(f"  텍스처 폴더: {TEX_DIR}")
-    print(f"  출력 폴더  : {OUT_DIR}")
-    print("=" * 66)
-
-    clear_scene()
-    setup_render(900, 32)
-
-    mats = [
-        mat_printed("b20_front",     load_tex(f"zen_{PRODUCT}_box20_front.png")),
-        mat_printed("b20_back",      load_tex(f"zen_{PRODUCT}_box20_back.png")),
-        mat_printed("b20_side_l",    load_tex(f"zen_{PRODUCT}_box20_side_l.png")),
-        mat_printed("b20_side_r",    load_tex(f"zen_{PRODUCT}_box20_side_r.png")),
-        mat_printed("b20_bottom",    load_tex(f"zen_{PRODUCT}_box20_bottom.png")),
-        mat_printed("b20_lid_top",   load_tex(f"zen_{PRODUCT}_box20_lid_top.png")),
-        mat_printed("b20_lid_front", load_tex(f"zen_{PRODUCT}_box20_lid_front.png")),
-        mat_printed("b20_skirt_l",   load_tex(f"zen_{PRODUCT}_box20_lid_skirt_l.png")),
-        mat_printed("b20_skirt_r",   load_tex(f"zen_{PRODUCT}_box20_lid_skirt_r.png")),
-        mat_plain("b20_ivory", IVORY, 0.6),
-        mat_plain("b20_white", WHITE, 0.65),
-    ]
-
-    tray = build_tray(mats)
-    lid = build_lid(mats)
-    parts = [tray, lid]
-    lid_base = [tuple(v.co) for v in lid.data.vertices]
-
-    size = W
-    build_studio(size)
-    cam, tgt = build_camera(size)
-    sc = bpy.context.scene
-
     import time
     t0 = time.time()
-    total = TURN_FRAMES + OPEN_FRAMES
+    per = TURN_FRAMES + OPEN_FRAMES
+    total = per * len(PRODUCTS)
     done = [0]
+    failed = []
 
-    def seq_shot(path, rot_z_deg):
-        done[0] += 1
-        if os.path.exists(path):
-            print(f"  [{done[0]:>3}/{total}] 이미 있음, 건너뜀")
-            return
-        for o in parts:
-            o.rotation_euler = (0, 0, math.radians(rot_z_deg))
-        sc.render.filepath = path
-        bpy.ops.render.render(write_still=True)
-        el = time.time() - t0
-        eta = el / done[0] * (total - done[0])
-        print(f"  [{done[0]:>3}/{total}]  경과 {el/60:.1f}분  남은시간 약 {eta/60:.1f}분")
+    for PRODUCT in PRODUCTS:
+        print("=" * 66)
+        print(f"  Zengenetics 정품 박스  |  {PRODUCT}  |  {SCRIPT_VERSION}")
+        print("=" * 66)
+        clear_scene()
+        setup_render(900, 32)
+        try:
+            mats = [
+                mat_printed("b20_front",     load_tex(f"zen_{PRODUCT}_box20_front.png")),
+                mat_printed("b20_back",      load_tex(f"zen_{PRODUCT}_box20_back.png")),
+                mat_printed("b20_side_l",    load_tex(f"zen_{PRODUCT}_box20_side_l.png")),
+                mat_printed("b20_side_r",    load_tex(f"zen_{PRODUCT}_box20_side_r.png")),
+                mat_printed("b20_bottom",    load_tex(f"zen_{PRODUCT}_box20_bottom.png")),
+                mat_printed("b20_lid_top",   load_tex(f"zen_{PRODUCT}_box20_lid_top.png")),
+                mat_printed("b20_lid_front", load_tex(f"zen_{PRODUCT}_box20_lid_front.png")),
+                mat_printed("b20_skirt_l",   load_tex(f"zen_{PRODUCT}_box20_lid_skirt_l.png")),
+                mat_printed("b20_skirt_r",   load_tex(f"zen_{PRODUCT}_box20_lid_skirt_r.png")),
+                mat_plain("b20_ivory", IVORY, 0.6),
+                mat_plain("b20_white", WHITE, 0.65),
+            ]
+        except FileNotFoundError as e:
+            print(f"  [건너뜀] {PRODUCT}: 텍스처 없음. 다음 제품으로.\n{e}")
+            failed.append(PRODUCT)
+            done[0] += per
+            continue
 
-    # 1) 닫힌 상태 턴테이블
-    d = os.path.join(OUT_DIR, f"{PRODUCT}_box20_turn")
-    os.makedirs(d, exist_ok=True)
-    print(f"\n  [1/2] 턴테이블 {TURN_FRAMES}장 → {d}")
-    set_lid_angle(lid, lid_base, 0)
-    aim_camera(cam, tgt, size, high=False)
-    for i in range(TURN_FRAMES):
-        seq_shot(os.path.join(d, f"frame_{i+1:04d}.png"), 360.0 * i / TURN_FRAMES)
+        tray = build_tray(mats)
+        lid = build_lid(mats)
+        parts = [tray, lid]
+        lid_base = [tuple(v.co) for v in lid.data.vertices]
+        size = W
+        build_studio(size)
+        cam, tgt = build_camera(size)
+        sc = bpy.context.scene
 
-    # 2) 개봉 시퀀스 (카메라 높임, 완급 곡선)
-    d = os.path.join(OUT_DIR, f"{PRODUCT}_box20_open")
-    os.makedirs(d, exist_ok=True)
-    print(f"\n  [2/2] 개봉 시퀀스 {OPEN_FRAMES}장 → {d}")
-    aim_camera(cam, tgt, size, high=True)
-    for i in range(OPEN_FRAMES):
-        t = i / (OPEN_FRAMES - 1)
-        ease = t * t * (3 - 2 * t)
-        set_lid_angle(lid, lid_base, LID_OPEN_DEG * ease)
-        seq_shot(os.path.join(d, f"frame_{i+1:04d}.png"), 25)
+        def shot(path, rot_z_deg):
+            done[0] += 1
+            if os.path.exists(path):
+                print(f"  [{done[0]:>3}/{total}] 이미 있음, 건너뜀")
+                return
+            for o in parts:
+                o.rotation_euler = (0, 0, math.radians(rot_z_deg))
+            sc.render.filepath = path
+            bpy.ops.render.render(write_still=True)
+            el = time.time() - t0
+            eta = el / done[0] * (total - done[0])
+            print(f"  [{done[0]:>3}/{total}]  경과 {el/60:.1f}분  남은시간 약 {eta/60:.1f}분")
 
-    print("\n  전부 완료!")
-    print(f"  턴테이블 : render/{PRODUCT}_box20_turn/  ({TURN_FRAMES}장)")
-    print(f"  개봉     : render/{PRODUCT}_box20_open/  ({OPEN_FRAMES}장)\n")
+        d = os.path.join(OUT_DIR, f"{PRODUCT}_box20_turn")
+        os.makedirs(d, exist_ok=True)
+        print(f"  턴테이블 {TURN_FRAMES}장 → {d}")
+        set_lid_angle(lid, lid_base, 0)
+        aim_camera(cam, tgt, size, high=False)
+        for i in range(TURN_FRAMES):
+            shot(os.path.join(d, f"frame_{i+1:04d}.png"), 360.0 * i / TURN_FRAMES)
+
+        d = os.path.join(OUT_DIR, f"{PRODUCT}_box20_open")
+        os.makedirs(d, exist_ok=True)
+        print(f"  개봉 {OPEN_FRAMES}장 → {d}")
+        aim_camera(cam, tgt, size, high=True)
+        for i in range(OPEN_FRAMES):
+            t = i / (OPEN_FRAMES - 1)
+            ease = t * t * (3 - 2 * t)
+            set_lid_angle(lid, lid_base, LID_OPEN_DEG * ease)
+            shot(os.path.join(d, f"frame_{i+1:04d}.png"), 25)
+
+    print("\n" + "=" * 66)
+    if failed:
+        print(f"  텍스처가 없어 건너뛴 제품: {', '.join(failed)}")
+    print("  완료! render 폴더에 제품별 _box20_turn / _box20_open 저장됨")
+    print("=" * 66 + "\n")
 
 
 main()

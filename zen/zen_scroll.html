@@ -54,12 +54,20 @@
    dir: webp/<dir>/frame_0001.webp … 없으면 render/<dir>/frame_0001.png */
 const SEQS = [
   {dir:"potassium_stick",      n:36, label:"포타슘 스틱",          sub:"턴테이블"},
-  {dir:"potassium_day6_turn",  n:36, label:"데일리팩 6입",         sub:"턴테이블"},
-  {dir:"potassium_day6_open",  n:24, label:"데일리팩 개봉",        sub:"플립톱 140°"},
-  {dir:"potassium_box20_turn", n:36, label:"정품 박스 20포",       sub:"턴테이블"},
-  {dir:"potassium_box20_open", n:24, label:"정품 박스 개봉",       sub:"뚜껑 100°"},
+  {dir:"potassium_day6_turn",  n:36, label:"포타슘 데일리팩",      sub:"턴테이블"},
+  {dir:"potassium_day6_open",  n:24, label:"포타슘 데일리팩 개봉", sub:"플립톱 140°"},
+  {dir:"potassium_box20_turn", n:36, label:"포타슘 정품 박스",     sub:"턴테이블"},
+  {dir:"potassium_box20_open", n:24, label:"포타슘 정품 박스 개봉", sub:"뚜껑 100°"},
   {dir:"magnesium_stick",      n:36, label:"마그네슘 스틱",        sub:"턴테이블"},
+  {dir:"magnesium_day6_turn",  n:36, label:"마그네슘 데일리팩",    sub:"턴테이블"},
+  {dir:"magnesium_day6_open",  n:24, label:"마그네슘 데일리팩 개봉", sub:"플립톱 140°"},
+  {dir:"magnesium_box20_turn", n:36, label:"마그네슘 정품 박스",   sub:"턴테이블"},
+  {dir:"magnesium_box20_open", n:24, label:"마그네슘 정품 박스 개봉", sub:"뚜껑 100°"},
   {dir:"vitaminb_stick",       n:36, label:"비타민B 스틱",         sub:"턴테이블"},
+  {dir:"vitaminb_day6_turn",   n:36, label:"비타민B 데일리팩",     sub:"턴테이블"},
+  {dir:"vitaminb_day6_open",   n:24, label:"비타민B 데일리팩 개봉", sub:"플립톱 140°"},
+  {dir:"vitaminb_box20_turn",  n:36, label:"비타민B 정품 박스",    sub:"턴테이블"},
+  {dir:"vitaminb_box20_open",  n:24, label:"비타민B 정품 박스 개봉", sub:"뚜껑 100°"},
 ];
 
 const pad = i => String(i).padStart(4, "0");
