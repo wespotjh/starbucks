@@ -1,0 +1,89 @@
+{
+  "box_mm": {
+    "w": 116.0,
+    "d": 85.0,
+    "h": 37.5
+  },
+  "type": "hinged tuck-lid tray (텅스터 지기 1피스)",
+  "lid": {
+    "hinge": "back wall top edge",
+    "front_skirt_mm": 37.5,
+    "side_skirt_mm": 37.7,
+    "open_max_deg": 110
+  },
+  "panels": {
+    "lid_front": {
+      "file": "zen_potassium_box20_lid_front.png",
+      "mm": [
+        115.1,
+        37.5
+      ],
+      "rotated180": true
+    },
+    "lid_top": {
+      "file": "zen_potassium_box20_lid_top.png",
+      "mm": [
+        112.0,
+        86.0
+      ],
+      "rotated180": true
+    },
+    "back": {
+      "file": "zen_potassium_box20_back.png",
+      "mm": [
+        114.6,
+        37.3
+      ],
+      "rotated180": true
+    },
+    "bottom": {
+      "file": "zen_potassium_box20_bottom.png",
+      "mm": [
+        114.2,
+        85.0
+      ],
+      "rotated180": false
+    },
+    "front": {
+      "file": "zen_potassium_box20_front.png",
+      "mm": [
+        114.2,
+        37.0
+      ],
+      "rotated180": true
+    },
+    "side_l": {
+      "file": "zen_potassium_box20_side_l.png",
+      "mm": [
+        38.2,
+        85.0
+      ],
+      "rotated180": false
+    },
+    "side_r": {
+      "file": "zen_potassium_box20_side_r.png",
+      "mm": [
+        38.2,
+        85.0
+      ],
+      "rotated180": false
+    },
+    "lid_skirt_l": {
+      "file": "zen_potassium_box20_lid_skirt_l.png",
+      "mm": [
+        39.5,
+        37.7
+      ],
+      "rotated180": false
+    },
+    "lid_skirt_r": {
+      "file": "zen_potassium_box20_lid_skirt_r.png",
+      "mm": [
+        36.5,
+        37.7
+      ],
+      "rotated180": false
+    }
+  },
+  "note": "회전 표시된 텍스처는 조립 방향 기준 정방향으로 저장됨"
+}
