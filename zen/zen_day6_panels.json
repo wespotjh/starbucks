@@ -1,0 +1,81 @@
+{
+  "box_mm": {
+    "w": 50.0,
+    "d": 20.0,
+    "h": 116.0
+  },
+  "tear_line_front_from_top_mm": 23.3,
+  "flap_depth_mm": 18.0,
+  "inner_frame": {
+    "total_w_mm": 78.5,
+    "h_mm": 96.9,
+    "folds_from_left_mm": [
+      16.0,
+      65.0
+    ],
+    "panels": [
+      "inner_left 16.0",
+      "inner_front 49.0",
+      "inner_right 13.5"
+    ]
+  },
+  "panels": {
+    "back": {
+      "file": "zen_potassium_day6_back.png",
+      "mm": [
+        50.0,
+        116.0
+      ]
+    },
+    "left": {
+      "file": "zen_potassium_day6_left.png",
+      "mm": [
+        20.0,
+        116.0
+      ]
+    },
+    "front": {
+      "file": "zen_potassium_day6_front.png",
+      "mm": [
+        50.0,
+        116.0
+      ]
+    },
+    "right": {
+      "file": "zen_potassium_day6_right.png",
+      "mm": [
+        19.4,
+        116.0
+      ]
+    },
+    "lid_top": {
+      "file": "zen_potassium_day6_lid_top.png",
+      "mm": [
+        42.4,
+        18.0
+      ]
+    },
+    "top_back_flap": {
+      "file": "zen_potassium_day6_top_back_flap.png",
+      "mm": [
+        42.4,
+        18.0
+      ]
+    },
+    "bottom": {
+      "file": "zen_potassium_day6_bottom.png",
+      "mm": [
+        42.4,
+        18.0
+      ]
+    },
+    "inner": {
+      "file": "zen_potassium_day6_inner.png",
+      "mm": [
+        78.5,
+        96.9
+      ]
+    }
+  },
+  "note": "텍스처는 패널 전체(뚜껑+몸통 통짜). 지오메트리에서 절취선 높이로 lid/body를 나누고 같은 텍스처를 높이 비율로 샘플링."
+}
