@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>붓기 원인 정밀 분석 TEST | 젠제네틱스</title>
+<meta name="description" content="하루를 따라가는 12개 질문으로 내 붓기 사이클의 시작점을 찾아보세요. 약 1분 소요, 응답은 저장되지 않습니다.">
+<meta property="og:title" content="붓기는 아침에 생기지 않습니다. 어젯밤에 시작됩니다.">
+<meta property="og:description" content="하루를 따라가는 12개 질문 · 약 1분 · 무료">
+<meta property="og:image" content="https://zengenetics.co.kr/event/og.png">
+<meta property="og:image:width" content="800">
+<meta property="og:image:height" content="400">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/png" sizes="32x32" href="https://zengenetics.co.kr/event/favicon-32.png">
+<link rel="shortcut icon" href="https://zengenetics.co.kr/event/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="https://zengenetics.co.kr/event/apple-touch-icon.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+
+<!-- ══ META PIXEL ══ 1155492259720864 ══ -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1155492259720864');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1155492259720864&ev=PageView&noscript=1"
+alt=""></noscript>
+
+<style>
+  html,body{margin:0;padding:0;background:#fff;}
+  body{font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;}
+
+  .zgc-app{position:relative;max-width:480px;margin:0 auto;display:flex;flex-direction:column;background:#fff;font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;color:#14181f;overflow-x:hidden;-webkit-text-size-adjust:100%;min-height:100vh;}
+  .zgc-app *{box-sizing:border-box;margin:0;padding:0;}
+  .zgc-app button{font-family:inherit;}
+  .zgc-mono{font-family:"SF Mono",Menlo,Consolas,"Roboto Mono",monospace;}
+  .zgc-ic{width:100%;height:100%;display:block;}
+  @keyframes zgcReveal{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+  @keyframes zgcPop{0%{transform:scale(.6);opacity:0;}70%{transform:scale(1.06);}100%{transform:scale(1);opacity:1;}}
+  @keyframes zgcDot{0%,100%{transform:translateY(0);opacity:.4;}50%{transform:translateY(-6px);opacity:1;}}
+  @keyframes zgcScan{0%{transform:translateX(-100%);}100%{transform:translateX(340%);}}
+
+  .zgc-topbar{position:sticky;top:0;z-index:10;background:#fff;padding:13px 22px 10px;border-bottom:1px solid #eef0f5;}
+  .zgc-tl{display:flex;align-items:flex-start;}
+  .zgc-tl-node{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:4px;width:34px;}
+  .zgc-tl-link{flex:1;height:2px;border-radius:1px;background:#e9edf3;margin-top:8px;transition:background .3s;}
+  .zgc-tl-link.is-on{background:#092d74;}
+  .zgc-tl-dot{width:17px;height:17px;border-radius:50%;border:1.5px solid #dde1e9;background:#fff;color:#c0c5cf;display:flex;align-items:center;justify-content:center;padding:3px;transition:.3s;}
+  .zgc-tl-node.is-now .zgc-tl-dot{border-color:#092d74;background:#092d74;color:#fff;transform:scale(1.18);}
+  .zgc-tl-node.is-done .zgc-tl-dot{border-color:#092d74;background:#f3f6fc;color:#092d74;}
+  .zgc-tl-name{font-size:9.5px;font-weight:700;color:#c0c5cf;letter-spacing:.02em;white-space:nowrap;}
+  .zgc-tl-node.is-now .zgc-tl-name{color:#092d74;}
+  .zgc-tl-node.is-done .zgc-tl-name{color:#8b93a1;}
+  .zgc-topbar-row{display:flex;justify-content:space-between;align-items:center;margin-top:8px;}
+  .zgc-back-btn{border:none;background:none;font-size:12.5px;font-weight:600;color:#8b93a1;cursor:pointer;padding:4px 0;}
+  .zgc-back-btn:disabled{opacity:0;pointer-events:none;}
+  .zgc-step-label{font-size:11px;font-weight:600;color:#8b93a1;letter-spacing:.06em;font-family:"SF Mono",Menlo,Consolas,"Roboto Mono",monospace;}
+  .zgc-step-label b{color:#092d74;font-weight:700;}
+
+  .zgc-body{flex:1;display:flex;flex-direction:column;padding:0 22px;}
+  .zgc-screen{flex:1;display:flex;flex-direction:column;}
+
+  .zgc-intro{text-align:center;padding:26px 0 34px;}
+  .zgc-intro-logo{display:block;height:19px;margin:0 auto 18px;}
+  .zgc-intro-eyebrow{font-size:10.5px;font-weight:700;letter-spacing:.22em;color:#8b93a1;margin-bottom:12px;}
+  .zgc-intro-title{font-size:23px;font-weight:800;letter-spacing:-.03em;line-height:1.34;margin-bottom:12px;color:#14181f;word-break:keep-all;}
+  .zgc-intro-title em{font-style:normal;color:#092d74;}
+  .zgc-intro-sub{font-size:14px;color:#5c6470;line-height:1.6;margin-bottom:18px;word-break:keep-all;}
+  .zgc-cta{display:block;width:100%;padding:17px;border:none;border-radius:14px;background:#092d74;color:#fff;font-size:16px;font-weight:700;letter-spacing:-.01em;text-align:center;cursor:pointer;box-shadow:0 8px 20px rgba(9,45,116,.22);transition:transform .15s ease,box-shadow .15s ease;}
+  .zgc-cta:active{transform:scale(.98);box-shadow:0 4px 10px rgba(9,45,116,.2);}
+  .zgc-cta-sub{margin-top:10px;margin-bottom:22px;font-size:11px;color:#9aa1ad;letter-spacing:.08em;font-weight:600;}
+  .zgc-card-head{display:flex;justify-content:space-between;align-items:center;background:#f7f8fa;padding:11px 16px;border-bottom:1px solid #e6eaf2;}
+  .zgc-card-head-title{font-size:12px;font-weight:800;color:#242a35;letter-spacing:.01em;}
+  .zgc-card-head-tag{font-size:10px;font-weight:600;color:#8b93a1;letter-spacing:.14em;}
+  .zgc-spec{border:1px solid #e6eaf2;border-radius:16px;margin-bottom:10px;overflow:hidden;text-align:left;}
+  .zgc-spec-rows{display:flex;}
+  .zgc-spec-cell{flex:1;padding:16px 8px 15px;text-align:center;}
+  .zgc-spec-cell + .zgc-spec-cell{border-left:1px solid #eef0f5;}
+  .zgc-spec-num{font-size:23px;font-weight:800;color:#092d74;letter-spacing:-.02em;line-height:1;margin-bottom:6px;}
+  .zgc-spec-num small{font-size:12px;font-weight:700;margin-left:1px;}
+  .zgc-spec-name{font-size:11.5px;font-weight:600;color:#8b93a1;letter-spacing:.01em;}
+  .zgc-loopstrip{display:flex;align-items:center;justify-content:center;gap:4px;padding:13px 8px;border:1px solid #e6eaf2;border-radius:16px;background:#fafbfd;}
+  .zgc-loopstrip-item{display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:#092d74;white-space:nowrap;}
+  .zgc-loopstrip-item i{font-style:normal;width:15px;height:15px;display:block;color:#092d74;}
+  .zgc-loopstrip-arrow{color:#c0c5cf;font-size:11px;font-weight:700;}
+
+  .zgc-interstitial{justify-content:center;align-items:center;text-align:center;min-height:420px;}
+  .zgc-inter-step{font-size:11px;font-weight:800;letter-spacing:.24em;color:#8b93a1;margin-bottom:16px;}
+  .zgc-inter-ic{width:56px;height:56px;color:#092d74;margin-bottom:14px;animation:zgcPop .5s cubic-bezier(.22,1,.36,1) both;}
+  .zgc-inter-title{font-size:21px;font-weight:800;letter-spacing:-.02em;color:#14181f;margin-bottom:8px;animation:zgcReveal .5s .1s cubic-bezier(.22,1,.36,1) both;}
+  .zgc-inter-sub{font-size:13px;color:#8b93a1;font-weight:600;margin-bottom:26px;animation:zgcReveal .5s .18s cubic-bezier(.22,1,.36,1) both;word-break:keep-all;}
+  .zgc-inter-dots{display:flex;gap:7px;justify-content:center;}
+  .zgc-inter-dots span{width:8px;height:8px;border-radius:50%;background:#092d74;animation:zgcDot 1s ease-in-out infinite;}
+  .zgc-inter-dots span:nth-child(2){animation-delay:.15s;}
+  .zgc-inter-dots span:nth-child(3){animation-delay:.3s;}
+
+  .zgc-qcard{margin-top:22px;opacity:1;transform:translateY(0);transition:opacity .24s ease,transform .24s ease;}
+  .zgc-qcard.zgc-transitioning{opacity:0;transform:translateY(12px);}
+  .zgc-qpath{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;background:#f3f6fc;margin-bottom:14px;animation:zgcReveal .35s both;}
+  .zgc-qpath-ic{width:13px;height:13px;color:#092d74;}
+  .zgc-qpath-text{font-size:10.5px;font-weight:700;color:#092d74;letter-spacing:.12em;}
+  .zgc-question{font-size:20px;font-weight:800;letter-spacing:-.02em;line-height:1.45;margin-bottom:20px;word-break:keep-all;color:#14181f;animation:zgcReveal .35s .04s both;}
+  .zgc-options{display:flex;flex-direction:column;gap:10px;padding-bottom:14px;}
+  .zgc-option{display:flex;align-items:center;gap:13px;width:100%;padding:12px 14px;border:1.5px solid #e6eaf2;border-radius:14px;background:#fff;font-size:14.5px;letter-spacing:-.01em;line-height:1.45;text-align:left;color:#242a35;cursor:pointer;transition:border-color .15s,background .15s,transform .1s;word-break:keep-all;animation:zgcReveal .35s both;}
+  .zgc-option:nth-child(1){animation-delay:.08s;}
+  .zgc-option:nth-child(2){animation-delay:.15s;}
+  .zgc-option:nth-child(3){animation-delay:.22s;}
+  .zgc-option:nth-child(4){animation-delay:.29s;}
+  .zgc-option:nth-child(5){animation-delay:.36s;}
+  .zgc-option:active{transform:scale(.98);}
+  .zgc-option-ic{flex:0 0 44px;width:44px;height:44px;border-radius:12px;background:#f3f4f7;color:#5c6470;display:flex;align-items:center;justify-content:center;padding:10px;transition:.15s;}
+  .zgc-option.is-selected{border-color:#092d74;background:#f3f6fc;font-weight:700;}
+  .zgc-option.is-selected .zgc-option-ic{background:#092d74;color:#fff;}
+  .zgc-option:disabled{cursor:default;}
+  .zgc-qfoot{padding-bottom:30px;font-size:10.5px;color:#c0c5cf;letter-spacing:.1em;font-weight:600;text-align:center;}
+
+  .zgc-multi-submit{display:block;width:100%;padding:16px;border:none;border-radius:14px;background:#092d74;color:#fff;font-size:15px;font-weight:700;text-align:center;cursor:pointer;margin-bottom:14px;box-shadow:0 8px 20px rgba(9,45,116,.22);}
+  .zgc-multi-submit:disabled{background:#dde1e9;color:#fff;box-shadow:none;cursor:default;}
+
+  .zgc-loading{justify-content:center;align-items:center;text-align:center;min-height:420px;padding:30px 0;}
+  .zgc-ring-wrap{position:relative;width:118px;height:118px;margin-bottom:22px;}
+  .zgc-ring-wrap svg{width:118px;height:118px;transform:rotate(-90deg);}
+  .zgc-ring-bg{fill:none;stroke:#eef0f5;stroke-width:7;}
+  .zgc-ring-fg{fill:none;stroke:#092d74;stroke-width:7;stroke-linecap:round;}
+  .zgc-ring-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .zgc-ring-pct{font-size:26px;font-weight:800;color:#092d74;letter-spacing:-.02em;line-height:1;font-family:"SF Mono",Menlo,Consolas,"Roboto Mono",monospace;}
+  .zgc-ring-label{margin-top:5px;font-size:9.5px;font-weight:700;color:#9aa1ad;letter-spacing:.18em;}
+  .zgc-loading-title{font-size:16px;font-weight:800;color:#14181f;letter-spacing:-.01em;margin-bottom:20px;}
+  .zgc-checks{display:flex;flex-direction:column;gap:9px;width:100%;max-width:300px;text-align:left;}
+  .zgc-check{position:relative;overflow:hidden;display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:11px;background:#f7f8fa;font-size:12.5px;font-weight:600;color:#c0c5cf;transition:color .3s,background .3s;}
+  .zgc-check::after{content:'';position:absolute;top:0;bottom:0;left:0;width:30%;background:linear-gradient(90deg,transparent,rgba(9,45,116,.06),transparent);transform:translateX(-100%);}
+  .zgc-check.is-now::after{animation:zgcScan 1s linear infinite;}
+  .zgc-check-ic{flex:0 0 17px;width:17px;height:17px;border-radius:50%;border:1.5px solid #dde1e9;background:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;transition:.3s;}
+  .zgc-check.is-on{color:#242a35;background:#f3f6fc;}
+  .zgc-check.is-on .zgc-check-ic{background:#092d74;border-color:#092d74;}
+  .zgc-check.is-on .zgc-check-ic::after{content:'';width:8px;height:4px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translateY(-1px);}
+
+  .zgc-result{padding-top:20px;padding-bottom:40px;}
+  .zgc-rv{opacity:0;animation:zgcReveal .55s cubic-bezier(.22,1,.36,1) forwards;}
+  .zgc-report-head{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;margin-bottom:16px;border-bottom:2px solid #14181f;}
+  .zgc-report-title{font-size:12px;font-weight:800;letter-spacing:.16em;color:#14181f;}
+  .zgc-report-meta{font-size:10.5px;font-weight:600;color:#8b93a1;letter-spacing:.06em;font-family:"SF Mono",Menlo,Consolas,"Roboto Mono",monospace;}
+  .zgc-banner{position:relative;border-radius:18px;padding:26px 22px 20px;text-align:center;color:#fff;background:#092d74;background:linear-gradient(160deg,#0d3a8e 0%,#092d74 100%);margin-bottom:12px;overflow:hidden;}
+  .zgc-banner::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.13) 1px,transparent 1px);background-size:14px 14px;opacity:.5;}
+  .zgc-banner > *{position:relative;}
+  .zgc-banner-badge{display:inline-block;padding:5px 13px;border-radius:999px;background:rgba(255,255,255,.16);font-size:11px;font-weight:800;letter-spacing:.18em;margin-bottom:13px;font-family:"SF Mono",Menlo,Consolas,"Roboto Mono",monospace;}
+  .zgc-banner-persona{font-size:14px;font-weight:600;opacity:.85;margin-bottom:6px;letter-spacing:-.01em;word-break:keep-all;}
+  .zgc-banner-title{font-size:25px;font-weight:800;letter-spacing:-.02em;margin-bottom:10px;}
+  .zgc-banner-subtitle{display:inline-block;font-size:12.5px;font-weight:600;opacity:.85;line-height:1.5;padding-top:10px;border-top:1px solid rgba(255,255,255,.2);margin-bottom:14px;word-break:keep-all;}
+  .zgc-banner-stats{display:flex;border-top:1px solid rgba(255,255,255,.16);}
+  .zgc-banner-stat{flex:1;padding:11px 4px 2px;}
+  .zgc-banner-stat + .zgc-banner-stat{border-left:1px solid rgba(255,255,255,.16);}
+  .zgc-banner-stat-k{font-size:9.5px;font-weight:700;letter-spacing:.14em;opacity:.65;margin-bottom:4px;}
+  .zgc-banner-stat-v{font-size:15px;font-weight:800;letter-spacing:.02em;font-family:"SF Mono",Menlo,Consolas,"Roboto Mono",monospace;}
+  .zgc-spectrum{display:flex;gap:5px;margin-bottom:12px;}
+  .zgc-spec-type{flex:1;text-align:center;padding:9px 2px 8px;border-radius:11px;border:1.5px solid #eef0f5;background:#fafbfc;}
+  .zgc-spec-type-no{font-size:8.5px;font-weight:700;letter-spacing:.1em;color:#c0c5cf;margin-bottom:3px;font-family:"SF Mono",Menlo,Consolas,"Roboto Mono",monospace;}
+  .zgc-spec-type-name{font-size:10px;font-weight:700;color:#c0c5cf;letter-spacing:-.02em;word-break:keep-all;line-height:1.3;}
+  .zgc-spec-type.is-me{border-color:#092d74;background:#092d74;}
+  .zgc-spec-type.is-me .zgc-spec-type-no{color:rgba(255,255,255,.7);}
+  .zgc-spec-type.is-me .zgc-spec-type-name{color:#fff;}
+  .zgc-card{border:1px solid #e6eaf2;border-radius:16px;margin-bottom:12px;overflow:hidden;}
+  .zgc-cycle-wrap{display:flex;justify-content:center;padding:14px 0 4px;}
+  .zgc-cycle-note{padding:0 18px 16px;font-size:12.5px;color:#5c6470;line-height:1.65;text-align:center;word-break:keep-all;}
+  .zgc-cycle-note b{color:#092d74;}
+  .zgc-score-rows{padding:16px 16px 18px;display:flex;flex-direction:column;gap:18px;}
+  .zgc-score-row{display:flex;flex-direction:column;gap:8px;}
+  .zgc-score-label{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:700;color:#3d4451;}
+  .zgc-score-label-l{display:flex;align-items:center;gap:7px;}
+  .zgc-score-label-l i{font-style:normal;width:16px;height:16px;display:block;}
+  .zgc-score-right{display:flex;align-items:baseline;gap:8px;}
+  .zgc-score-pct{font-size:13px;font-weight:800;font-family:"SF Mono",Menlo,Consolas,"Roboto Mono",monospace;}
+  .zgc-score-tag{font-size:10.5px;font-weight:700;padding:2.5px 9px;border-radius:999px;}
+  .zgc-range-labels{display:flex;gap:2px;margin-top:5px;}
+  .zgc-range-labels span{flex:1;text-align:center;font-size:9.5px;font-weight:700;color:#c0c5cf;letter-spacing:.04em;}
+  .zgc-summary{font-size:14.5px;color:#454d59;line-height:1.75;letter-spacing:-.005em;margin:8px 0 14px;word-break:keep-all;}
+  .zgc-quote{border-left:3px solid #dde1e9;padding:2px 0 2px 13px;margin:0 0 14px;font-size:13.5px;color:#5c6470;line-height:1.65;word-break:keep-all;}
+  .zgc-quote b{color:#092d74;}
+  .zgc-product-card{border:1.5px solid #e6eaf2;border-radius:16px;overflow:hidden;margin-bottom:12px;}
+  .zgc-product-body{padding:18px 16px;}
+  .zgc-product-label{display:inline-block;font-size:11.5px;font-weight:800;color:#092d74;background:#eef2fa;border-radius:999px;padding:5px 11px;margin-bottom:12px;letter-spacing:.02em;}
+  .zgc-product-name{font-size:19px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px;word-break:keep-all;color:#14181f;}
+  .zgc-product-official{font-size:12.5px;color:#8b93a1;line-height:1.5;margin-bottom:14px;word-break:keep-all;}
+  .zgc-product-comp{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+  .zgc-comp-pill{display:inline-flex;align-items:center;gap:7px;padding:6px 11px 6px 7px;border-radius:999px;border:1px solid #dfe5f0;background:#fafbfd;font-size:12px;font-weight:700;color:#3d4451;}
+  .zgc-comp-pill i{font-style:normal;width:20px;height:20px;display:block;color:#092d74;}
+  .zgc-seq{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+  .zgc-seq-step{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:12px;background:#f7f8fa;font-size:12.5px;font-weight:600;color:#3d4451;line-height:1.5;word-break:keep-all;}
+  .zgc-seq-no{flex:0 0 24px;width:24px;height:24px;border-radius:8px;background:#092d74;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;font-family:"SF Mono",Menlo,Consolas,"Roboto Mono",monospace;}
+  .zgc-seq-step b{color:#092d74;}
+  .zgc-product-btn{display:block;width:100%;padding:16px;border:none;border-radius:14px;background:#092d74;color:#fff;font-size:15px;font-weight:700;text-align:center;cursor:pointer;text-decoration:none;box-shadow:0 8px 20px rgba(9,45,116,.22);transition:transform .15s ease;}
+  .zgc-product-btn:active{transform:scale(.98);}
+  .zgc-product-btn.is-sub{background:#fff;color:#092d74;border:1.5px solid #092d74;box-shadow:none;margin-top:8px;}
+  .zgc-noneed{border:1.5px solid #e6eaf2;border-radius:16px;overflow:hidden;margin-bottom:12px;}
+  .zgc-noneed-body{padding:15px 16px 16px;display:flex;flex-direction:column;gap:11px;}
+  .zgc-noneed-row{display:flex;align-items:flex-start;gap:10px;}
+  .zgc-noneed-ic{flex:0 0 26px;width:26px;height:26px;border-radius:9px;background:#f3f4f7;color:#9aa1ad;display:flex;align-items:center;justify-content:center;padding:4px;position:relative;}
+  .zgc-noneed-ic::after{content:'';position:absolute;left:3px;right:3px;top:50%;height:1.5px;background:#d64545;transform:rotate(-18deg);border-radius:1px;}
+  .zgc-noneed-t{font-size:13px;font-weight:700;color:#3d4451;margin-bottom:2px;}
+  .zgc-noneed-d{font-size:12px;color:#8b93a1;line-height:1.55;word-break:keep-all;}
+  .zgc-reason{background:#f3f6fc;border-left:3px solid #092d74;border-radius:0 14px 14px 0;padding:16px 16px 16px 15px;margin-bottom:22px;}
+  .zgc-reason-title{font-size:13px;font-weight:800;color:#092d74;margin-bottom:8px;letter-spacing:-.01em;}
+  .zgc-reason-text{font-size:13.5px;color:#454d59;line-height:1.7;word-break:keep-all;}
+  .zgc-safe-list{padding:16px;display:flex;flex-direction:column;gap:9px;}
+  .zgc-safe-item{display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:11px;background:#fdf5f0;font-size:13px;font-weight:600;color:#8a4a1f;line-height:1.5;word-break:keep-all;}
+  .zgc-safe-item i{font-style:normal;flex:0 0 18px;width:18px;height:18px;display:block;color:#e07b35;}
+  .zgc-share-btn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:16px;border:none;border-radius:14px;background:#FEE500;color:#191919;font-size:15px;font-weight:700;text-align:center;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.08);transition:transform .15s ease;margin-bottom:10px;}
+  .zgc-share-btn:active{transform:scale(.98);}
+  .zgc-share-btn i{font-style:normal;width:20px;height:20px;display:block;}
+  .zgc-insta-btn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(45deg,#f58529 0%,#dd2a7b 45%,#8134af 75%,#515bd4 100%);color:#fff;font-size:15px;font-weight:700;text-align:center;cursor:pointer;box-shadow:0 6px 16px rgba(221,42,123,.25);transition:transform .15s ease;margin-bottom:10px;}
+  .zgc-insta-btn:active{transform:scale(.98);}
+  .zgc-insta-btn i{font-style:normal;width:20px;height:20px;display:block;}
+  .zgc-link{display:block;text-align:center;margin-top:14px;font-size:13px;color:#8b93a1;text-decoration:underline;cursor:pointer;background:none;border:none;padding:8px;width:100%;}
+  .zgc-report-foot{margin-top:8px;text-align:center;font-size:10px;color:#c0c5cf;letter-spacing:.1em;font-weight:600;line-height:1.8;}
+</style>
+</head>
+<body>
+
+<div class="zgc-app" id="zgc-app">
+  <div class="zgc-topbar" id="zgc-topbar" style="display:none;">
+    <div class="zgc-tl" id="zgc-tl"></div>
+    <div class="zgc-topbar-row">
+      <button class="zgc-back-btn" id="zgc-back-btn" type="button">&#8592; 이전 질문</button>
+      <div id="zgc-qnum" class="zgc-step-label"></div>
+    </div>
+  </div>
+
+  <div class="zgc-body">
+    <section class="zgc-screen zgc-intro" id="zgc-intro">
+      <img class="zgc-intro-logo" src="https://zengenetics.co.kr/web/upload/appfiles/ZaReJam3QiELznoZeGGkMG/418f71805d56ca32575f6bb16d1d6b17.png" alt="Zengenetics">
+      <div class="zgc-intro-eyebrow">EDEMA CYCLE ANALYSIS</div>
+      <h1 class="zgc-intro-title">붓기는 아침에 생기지 않습니다.<br><em>어젯밤에 시작됩니다.</em></h1>
+      <p class="zgc-intro-sub">하루를 따라가는 12개 질문으로<br>내 붓기 사이클의 <b>시작점</b>을 찾아보세요.</p>
+      <button class="zgc-cta" id="zgc-start-btn" type="button">내 사이클 확인하기</button>
+      <div class="zgc-cta-sub zgc-mono">SELF-CHECK · 약 1분 소요 · 응답은 저장되지 않습니다</div>
+
+      <div class="zgc-spec">
+        <div class="zgc-card-head">
+          <span class="zgc-card-head-title">검사 개요</span>
+          <span class="zgc-card-head-tag zgc-mono">OVERVIEW</span>
+        </div>
+        <div class="zgc-spec-rows">
+          <div class="zgc-spec-cell"><div class="zgc-spec-num">12<small>문항</small></div><div class="zgc-spec-name">하루 순서 진행</div></div>
+          <div class="zgc-spec-cell"><div class="zgc-spec-num">3<small>구간</small></div><div class="zgc-spec-name">부하 측정</div></div>
+          <div class="zgc-spec-cell"><div class="zgc-spec-num">5<small>유형</small></div><div class="zgc-spec-name">시작점 판정</div></div>
+        </div>
+      </div>
+      <div class="zgc-loopstrip" id="zgc-loopstrip"></div>
+    </section>
+
+    <section class="zgc-screen zgc-interstitial" id="zgc-step" style="display:none;">
+      <div class="zgc-inter-step zgc-mono" id="zgc-inter-step"></div>
+      <div class="zgc-inter-ic" id="zgc-inter-ic"></div>
+      <div class="zgc-inter-title" id="zgc-inter-title"></div>
+      <div class="zgc-inter-sub" id="zgc-inter-sub"></div>
+      <div class="zgc-inter-dots"><span></span><span></span><span></span></div>
+    </section>
+
+    <section class="zgc-screen" id="zgc-quiz" style="display:none;">
+      <div class="zgc-qcard" id="zgc-qcard">
+        <div class="zgc-qpath"><span class="zgc-qpath-ic" id="zgc-qpath-ic"></span><span class="zgc-qpath-text" id="zgc-qpath-text"></span></div>
+        <h2 id="zgc-question" class="zgc-question"></h2>
+        <div id="zgc-options" class="zgc-options"></div>
+        <div id="zgc-submit-slot"></div>
+        <div class="zgc-qfoot zgc-mono" id="zgc-qfoot"></div>
+      </div>
+    </section>
+
+    <section class="zgc-screen zgc-loading" id="zgc-loading" style="display:none;">
+      <div class="zgc-ring-wrap">
+        <svg viewBox="0 0 118 118">
+          <circle class="zgc-ring-bg" cx="59" cy="59" r="52"></circle>
+          <circle class="zgc-ring-fg" id="zgc-ring-fg" cx="59" cy="59" r="52" stroke-dasharray="326.7" stroke-dashoffset="326.7"></circle>
+        </svg>
+        <div class="zgc-ring-num">
+          <div class="zgc-ring-pct" id="zgc-ring-pct">0%</div>
+          <div class="zgc-ring-label">ANALYZING</div>
+        </div>
+      </div>
+      <div class="zgc-loading-title">하루 사이클을 따라 분석하고 있어요</div>
+      <div class="zgc-checks">
+        <div class="zgc-check" id="zgc-chk-0"><span class="zgc-check-ic"></span>응답 데이터 정규화</div>
+        <div class="zgc-check" id="zgc-chk-1"><span class="zgc-check-ic"></span>낮 · 나트륨·수분 부하 계산</div>
+        <div class="zgc-check" id="zgc-chk-2"><span class="zgc-check-ic"></span>오후 · 낮 에너지 부하 계산</div>
+        <div class="zgc-check" id="zgc-chk-3"><span class="zgc-check-ic"></span>밤 · 회복 부하 계산</div>
+        <div class="zgc-check" id="zgc-chk-4"><span class="zgc-check-ic"></span>사이클 시작점 탐색</div>
+      </div>
+    </section>
+
+    <section class="zgc-screen zgc-result" id="zgc-result" style="display:none;">
+      <div id="zgc-result-content"></div>
+      <button class="zgc-link" id="zgc-retry-btn" type="button">다시 분석하기</button>
+      <div class="zgc-report-foot zgc-mono">ZENGENETICS · EDEMA CYCLE ANALYSIS<br>본 검사는 의학적 진단이 아닌 자가 참고용입니다<br>응답은 브라우저 안에서만 계산되며 저장·전송되지 않습니다</div>
+    </section>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ══════════════════════════════════════════════════
+     1. TUNING — 유형 분포를 결정하는 임계값.
+     ※ 죽은 파라미터 TRI / TRI_R / TRI_E 제거됨 (P1-1)
+     ══════════════════════════════════════════════════ */
+  var TUNING = { LOW: 44, CO_R: 56, CO_E: 68 };
+
+  /* T1 저부하 카피 전환 기준 (P0-3) */
+  var T1_LOW_N = 56;
+
+  /* ── 공유 설정 ─────────────────────────────────────
+     kakaoKey: developers.kakao.com JavaScript 키.
+               [플랫폼 > Web]에 https://zengenetics.co.kr 등록 필수.
+               비워두면 모바일 OS 공유시트 / PC 링크복사로 폴백.
+     url     : 공유로 유입된 트래픽을 구분하기 위한 UTM 주소. */
+  var SHARE = {
+    kakaoKey: '2872db340512de24d6d03150d5477bd2',
+    url: 'https://zengenetics.co.kr/event/edema.html?utm_source=share&utm_medium=viral&utm_campaign=edema_cycle',
+    display: 'zengenetics.co.kr',
+    image: 'https://zengenetics.co.kr/event/og.png'
+  };
+
+  /* ══════════════════════════════════════════════════
+     2. I — 인라인 SVG 아이콘
+     ══════════════════════════════════════════════════ */
+  var I = {
+    chMorning: '<path d="M8 18a4 4 0 0 1 8 0"/><path d="M12 10V7"/><path d="M6.5 12.5 5 11"/><path d="M17.5 12.5 19 11"/><path d="M4 21h16"/>',
+    chDay: '<circle cx="12" cy="12" r="3.6"/><path d="M12 4v2M12 18v2M4 12h2M18 12h2M6.3 6.3l1.4 1.4M16.3 16.3l1.4 1.4M17.7 6.3l-1.4 1.4M7.7 16.3l-1.4 1.4"/>',
+    chAfternoon: '<circle cx="12" cy="13" r="3.6"/><path d="M12 6.5V5M5.5 13H4M20 13h-1.5M7.4 8.4 6.3 7.3M16.6 8.4l1.1-1.1"/><path d="M4 20h16"/>',
+    chNight: '<path d="M20 14.2A8 8 0 1 1 9.8 4a6.5 6.5 0 0 0 10.2 10.2z"/>',
+    chCheck: '<path d="M12 3l7 3v5c0 4.6-3 7.6-7 9-4-1.4-7-4.4-7-9V6z"/><path d="M9 11.5l2 2 4-4.2"/>',
+    eyelid: '<path d="M3 12s3.4-5.5 9-5.5S21 12 21 12s-3.4 5.5-9 5.5S3 12 3 12z"/><circle cx="12" cy="12" r="2.2"/><path d="M6.5 5.5C8 4.6 10 4 12 4s4 .6 5.5 1.5"/>',
+    faceline: '<path d="M12 3.5c3.9 0 6.5 2.8 6.5 6.4 0 4.6-2.7 10.6-6.5 10.6S5.5 14.5 5.5 9.9c0-3.6 2.6-6.4 6.5-6.4z"/><path d="M9 10h.01M15 10h.01"/><path d="M8.2 15.5c1.2 1.1 2.4 1.6 3.8 1.6s2.6-.5 3.8-1.6"/>',
+    ring: '<circle cx="12" cy="14.5" r="4.6"/><path d="M12 5.2l2.3 2.3-2.3 2.3-2.3-2.3z"/>',
+    leg: '<path d="M10 3c.2 5.5-.4 9-2.8 13.2"/><path d="M15.5 3c.3 5-.1 9.5 1 13.2"/><path d="M5.5 20.5h13"/><path d="M7.2 16.2h9.3"/>',
+    wash: '<path d="M12 4.5c2.8 3.6 4.6 5.9 4.6 8.2a4.6 4.6 0 1 1-9.2 0c0-2.3 1.8-4.6 4.6-8.2z"/><path d="M4 5.5l1 1M19.5 4.5l1 1M3.5 10h1.4"/>',
+    clocknoon: '<circle cx="12" cy="12" r="8"/><path d="M12 12V7.2"/><path d="M12 12l2.6 1.7"/>',
+    clockmoon: '<circle cx="10.5" cy="13" r="7"/><path d="M10.5 13V9.4M10.5 13l2.3 1.6"/><path d="M20.8 6.4A3.6 3.6 0 1 1 16.2 2a3 3 0 0 0 4.6 4.4z"/>',
+    fogweek: '<path d="M6.5 13.5a3.8 3.8 0 0 1 .4-7.6 4.8 4.8 0 0 1 9.3 1 3.2 3.2 0 0 1-.6 6.6z"/><path d="M5 17.5h7M15 17.5h4M7 21h5"/>',
+    half: '<circle cx="12" cy="12" r="8"/><path d="M12 4v16"/><path d="M12 6.5c2 1.4 3.2 3.2 3.2 5.5S14 16.1 12 17.5"/>',
+    feather: '<path d="M20 4c-6.8.2-11.6 4.6-13.7 10.8L4.5 20"/><path d="M20 4c.3 6.8-4.2 11.7-10.4 13.6"/><path d="M8.5 13.5h5.5M11 9.5h5"/>',
+    bento: '<rect x="4" y="8" width="16" height="11" rx="2"/><path d="M4 13h16M12 13v6"/><path d="M9.5 8V5.5h5V8"/>',
+    soup: '<path d="M4 12.5h16a8 8 0 0 1-16 0z"/><path d="M9 20.5h6"/><path d="M10 9.5c0-1.5 1-1.5 1-3M14.5 9.5c0-1.5 1-1.5 1-3"/>',
+    ramen: '<path d="M7 8.5h10l-1.3 12H8.3z"/><path d="M6 8.5h12"/><path d="M10 5.5c0-1.2.8-1.2.8-2.4M13.5 5.5c0-1.2.8-1.2.8-2.4"/>',
+    sameface: '<circle cx="12" cy="12" r="8"/><path d="M9 10h.01M15 10h.01"/><path d="M9.3 15h5.4"/>',
+    puffy: '<circle cx="12" cy="12" r="8"/><path d="M9 10.5h.01M15 10.5h.01"/><path d="M6.5 13.5a2.4 2.4 0 0 0 2.4 1.8M17.5 13.5a2.4 2.4 0 0 1-2.4 1.8"/><path d="M10.5 16.8h3"/>',
+    puffymax: '<circle cx="12" cy="12" r="8"/><path d="M7.8 10.6a1.6 1.6 0 0 1 2.4 0M13.8 10.6a1.6 1.6 0 0 1 2.4 0"/><path d="M10.7 15.8h2.6"/><path d="M3.6 13.5a3.2 3.2 0 0 0 2.2 2.2M20.4 13.5a3.2 3.2 0 0 1-2.2 2.2"/>',
+    bottle: '<path d="M9 3.5h6"/><path d="M9.5 3.5v3L8 9v9.5a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V9l-1.5-2.5v-3"/><path d="M8 13.5h8"/>',
+    coffee: '<path d="M4.5 8.5h11v5.5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5z"/><path d="M15.5 9.5h2a2.4 2.4 0 0 1 0 4.8h-2"/><path d="M8 5.5c0-1.2.8-1.2.8-2.4M11.5 5.5c0-1.2.8-1.2.8-2.4"/>',
+    nowater: '<path d="M12 4.5c2.8 3.6 4.6 5.9 4.6 8.2a4.6 4.6 0 0 1-8.6 2.3"/><path d="M7.6 10.5c-.1.8-.2 1.5-.2 2.2"/><path d="M4 4l16 16"/>',
+    focus: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.6"/><path d="M12 12h.01"/>',
+    coffeeplus: '<path d="M4.5 9.5h10v5a4.6 4.6 0 0 1-4.6 4.6h-.8A4.6 4.6 0 0 1 4.5 14.5z"/><path d="M14.5 10.5h1.6a2.2 2.2 0 0 1 0 4.4h-1.6"/><path d="M18.5 3.5v5M16 6h5"/>',
+    choco: '<rect x="5" y="5" width="14" height="14" rx="2"/><path d="M12 5v14M5 12h14"/>',
+    fog: '<path d="M6.5 12a3.8 3.8 0 0 1 .4-7.6 4.8 4.8 0 0 1 9.3 1A3.2 3.2 0 0 1 15.6 12z"/><path d="M4.5 15.5h15M6.5 19h11"/>',
+    suncloud: '<circle cx="8.5" cy="8.5" r="3.2"/><path d="M8.5 3.2V2M3.2 8.5H2M4.8 4.8l-1-1"/><path d="M12.5 20.5H8a3.3 3.3 0 0 1 .4-6.6 4.2 4.2 0 0 1 8.1.9 2.9 2.9 0 0 1-.5 5.7z"/>',
+    shoe: '<path d="M3.5 17.5c0-1.8 1-2.8 2.8-2.9l3.2-3.6h3.6l2.6 2.6c3 .2 4.8 1.4 4.8 3.9z"/><path d="M3.5 17.5h17"/><path d="M12 11l1 2M9.5 11.5l.8 1.8"/>',
+    sock: '<path d="M9 3.5h6.5v8l2.7 2.8a4 4 0 1 1-5.7 5.6l-3.5-3.6z"/><path d="M9 6.5h6.5"/><path d="M10.5 12h3.4M11.5 14.8h3"/>',
+    tightshoe: '<path d="M4.5 16.5c0-1.6.9-2.5 2.5-2.6l2.9-3.2h3.2l2.3 2.3c2.7.2 4.3 1.3 4.3 3.5z"/><path d="M4.5 16.5h15.2"/><path d="M2.5 10.5l1.8.9M2 14h2M21.5 9.5l-1.8.9"/>',
+    fasting: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4.6"/><path d="M5 19 19 5"/>',
+    tea: '<path d="M5.5 10.5h10v4.4a4.6 4.6 0 0 1-4.6 4.6h-.8a4.6 4.6 0 0 1-4.6-4.6z"/><path d="M15.5 11.5h1.6a2.1 2.1 0 0 1 0 4.2h-1.6"/><path d="M10.5 7.5c2.6-.6 3.9-2 4-4.2-2.6.6-3.9 2-4 4.2z"/>',
+    beer: '<path d="M6.5 7.5h9v13h-9z"/><path d="M15.5 10h1.7a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-1.7"/><path d="M6.5 7.5c0-2 1.3-3 3-3 .5-.9 1.4-1.4 2.5-1.4s2 .5 2.5 1.4c1.7 0 3 1 3 3z"/><path d="M9.5 11v6M12.5 11v6"/>',
+    bed: '<path d="M3 19.5v-9"/><path d="M3 15.5h18v4"/><path d="M3 12.5h6a2.5 2.5 0 0 1 2.5 2.5"/><path d="M14 4.5h4l-4 4h4"/>',
+    phonebed: '<rect x="8.5" y="3.5" width="7" height="12.5" rx="1.4"/><path d="M11 5.7h2"/><path d="M5.5 8.5 4 7.5M5.5 12H3.8M18.5 8.5l1.5-1M18.5 12h1.7"/><path d="M4 20.5h16"/>',
+    awake: '<path d="M8.7 3.4A7.4 7.4 0 1 0 20.6 11 6 6 0 0 1 8.7 3.4z"/><path d="M13.5 17s1.7-2.4 4.2-2.4 4.3 2.4 4.3 2.4-1.8 2.4-4.3 2.4-4.2-2.4-4.2-2.4z" stroke-width="1.4"/><circle cx="17.7" cy="17" r=".9" stroke-width="1.4"/>',
+    hospital: '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8.5v7M8.5 12h7"/>',
+    pill: '<path d="M7 13.2l6.2-6.2a4.35 4.35 0 0 1 6.2 6.2L13.2 19.4a4.35 4.35 0 0 1-6.2-6.2z"/><path d="M10.1 10.1l3.8 3.8"/>',
+    mother: '<circle cx="11.5" cy="5.3" r="2.1"/><path d="M11.5 8.4c-1.9 1.3-2.7 3.2-2.4 5.6l.5 3.5c.1.9.9 1.5 1.9 1.5h.9"/><path d="M12.2 9.8c2.7.7 4 2.9 3.3 5.4-.4 1.6-1.7 2.7-3.3 2.9"/>',
+    oneleg: '<path d="M9 3.5v6"/><path d="M15.5 3.5c.2 5.6-.2 10 1 13.5"/><path d="M9 9.5c-2.3 1.2-3.2 3.2-2.6 5.4.5 2 2.2 3.2 4.2 3.1 2.3-.2 3.8-1.9 3.8-4.2 0-2-1.2-3.6-3.2-4.1"/><path d="M5.5 20.5h13"/>',
+    okcheck: '<circle cx="12" cy="12" r="8"/><path d="M8.6 12.2l2.3 2.3 4.5-4.7"/>',
+    warn: '<path d="M12 4.2 21 20H3z"/><path d="M12 10.2v4"/><path d="M12 17.2h.01"/>'
+  };
+  function markSvg(txt) {
+    return '<svg class="zgc-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><text x="12" y="15.6" text-anchor="middle" font-size="9" font-weight="700" fill="currentColor" stroke="none" font-family="inherit">' + txt + '</text></svg>';
+  }
+  function ic(name) {
+    return '<svg class="zgc-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + I[name] + '</svg>';
+  }
+
+  /* ══════════════════════════════════════════════════
+     3. CH — 챕터 5개
+     ══════════════════════════════════════════════════ */
+  var CH = [
+    { no: '01', name: '아침', icon: 'chMorning', head: '아침', sub: '거울 앞에서 시작합니다' },
+    { no: '02', name: '낮', icon: 'chDay', head: '낮', sub: '점심과 물이 붓기를 결정하는 시간입니다' },
+    { no: '03', name: '오후', icon: 'chAfternoon', head: '오후', sub: '에너지가 새는 지점을 찾습니다' },
+    { no: '04', name: '밤', icon: 'chNight', head: '저녁과 밤', sub: '내일 아침이 결정되는 시간입니다' },
+    { no: '05', name: '확인', icon: 'chCheck', head: '마지막 확인', sub: '결과가 완전히 달라질 수 있습니다' }
+  ];
+
+  /* ══════════════════════════════════════════════════
+     4. Q — 문항 12개
+     ※ Q1에 w{N:1.5} + s값 + 5번 선택지 추가 (P0-2)
+     ══════════════════════════════════════════════════ */
+  var Q = [
+    { ch: 0, type: 'seg', w: { N: 1.5 }, q: '아침에 눈 뜨고 거울 앞에 섰을 때, 제일 먼저 눈에 들어오는 건?',
+      o: [ { ic: 'eyelid', t: '쌍꺼풀이 얇아졌거나 아예 사라져 있다', seg: 'face', s: 2 },
+           { ic: 'faceline', t: '얼굴 윤곽선이 어제보다 뭉개져 있다', seg: 'face', s: 2 },
+           { ic: 'ring', t: '반지가 아침엔 잘 안 들어간다', seg: 'hand', s: 2 },
+           { ic: 'leg', t: '아침은 멀쩡한데 저녁엔 다리가 문제다', seg: 'leg', s: 1 },
+           { ic: 'okcheck', t: '특별히 달라진 건 없다', seg: 'face', s: 0 } ] },
+    { ch: 0, w: { N: 0.5, R: 0.5 }, q: '그 붓기, 보통 언제쯤 가라앉나요?',
+      o: [ { ic: 'wash', t: '세수하고 30분쯤 지나면 돌아온다', s: 0 },
+           { ic: 'clocknoon', t: '점심때는 돼야 봐줄 만해진다', s: 1 },
+           { ic: 'clockmoon', t: '하루가 끝나도 그대로다', s: 2 } ] },
+    { ch: 0, w: { R: 1 }, rev: true, q: '"오늘 몸 좀 가볍네?" 싶은 아침은 일주일에 며칠인가요?',
+      o: [ { ic: 'fogweek', t: '그런 날이 언제였는지 기억이 없다', s: 2 },
+           { ic: 'half', t: '2~3일 — 반반이다', s: 1 },
+           { ic: 'feather', t: '4일 이상 — 대체로 가볍게 일어난다', s: 0 } ] },
+    { ch: 1, w: { N: 1 }, q: '점심, 보통 어떻게 해결하세요?',
+      o: [ { ic: 'bento', t: '도시락이나 집밥 위주', s: 0 },
+           { ic: 'soup', t: '회사 근처 백반·김치찌개·국밥', s: 1 },
+           { ic: 'ramen', t: '배달·편의점·마라탕·라면으로 때운다', s: 2 } ] },
+    { ch: 1, w: { N: 1 }, q: '어제 국물 있는 걸 먹었다면, 오늘 아침은 어떤가요?',
+      o: [ { ic: 'sameface', t: '별 차이 없다', s: 0 },
+           { ic: 'puffy', t: '좀 부은 것 같긴 하다', s: 1 },
+           { ic: 'puffymax', t: '누가 봐도 알 만큼 얼굴이 팅팅 부어 있다', s: 2 } ] },
+    { ch: 1, w: { N: 0.5, E: 0.5 }, q: '하루에 마시는 것 중 뭐가 제일 많나요?',
+      o: [ { ic: 'bottle', t: '물 — 텀블러 채워두고 계속 마신다', s: 0 },
+           { ic: 'coffee', t: '커피 1~2잔, 물은 생각날 때만', s: 1 },
+           { ic: 'nowater', t: '커피로 버티고 물은 거의 안 마신다', s: 2 } ] },
+    { ch: 2, w: { E: 1 }, q: '오후 3시, 지금 당신은 어떤 상태인가요?',
+      o: [ { ic: 'focus', t: '그럭저럭 집중이 된다', s: 0 },
+           { ic: 'coffeeplus', t: '커피 한 잔 더 마셔야 버틴다', s: 1 },
+           { ic: 'choco', t: '초콜릿이든 뭐든 당 되는 걸 찾는다', s: 2 } ] },
+    { ch: 2, w: { E: 1 }, rev: true, q: '하루 중 "머리가 맑다" 싶은 시간이 얼마나 되나요?',
+      o: [ { ic: 'fog', t: '하루 종일 안개 낀 것 같다', s: 2 },
+           { ic: 'suncloud', t: '오전 두어 시간 정도', s: 1 },
+           { ic: 'chDay', t: '오전 내내 맑다', s: 0 } ] },
+    { ch: 3, w: { N: 0.5, R: 0.5 }, q: '퇴근하고 신발 벗을 때, 발은 어떤가요?',
+      o: [ { ic: 'shoe', t: '아침이랑 별로 다르지 않다', s: 0 },
+           { ic: 'sock', t: '양말 자국이 선명하게 남아 있다', s: 1 },
+           { ic: 'tightshoe', t: '아침에 신은 신발이 저녁엔 꽉 낀다', s: 2 } ] },
+    { ch: 3, w: { N: 0.6, R: 0.4 }, q: '저녁 먹고 자기 전까지, 뭘 드세요?',
+      o: [ { ic: 'fasting', t: '아무것도 안 먹는다', s: 0 },
+           { ic: 'tea', t: '과일이나 차 정도', s: 1 },
+           { ic: 'beer', t: '야식·맥주·과자 — 주 2회 이상', s: 2 } ] },
+    { ch: 3, w: { R: 1 }, q: '침대에 누웠을 때, 보통 어떻게 되나요?',
+      o: [ { ic: 'bed', t: '눕고 10분 안에 잠든다', s: 0 },
+           { ic: 'phonebed', t: '휴대폰 보다가 30분~1시간 뒤에 잠든다', s: 1 },
+           { ic: 'awake', t: '피곤한데 잠이 안 오고, 자다가 깬다', s: 2 } ] },
+    { ch: 4, type: 'safety', q: '해당하는 게 있으면 골라주세요. 결과가 완전히 달라집니다.',
+      o: [ { ic: 'hospital', t: '신장·심장·간 질환으로 진료받은 적 있다', warn: true },
+           { ic: 'pill', t: '혈압약이나 이뇨제를 복용 중이다', warn: true },
+           { ic: 'mother', t: '임신 또는 수유 중이다', warn: true },
+           { ic: 'oneleg', t: '한쪽 다리(팔)만 눈에 띄게 붓는다', warn: true },
+           { ic: 'okcheck', t: '해당 없음', none: true } ] }
+  ];
+
+  /* ══════════════════════════════════════════════════
+     5. AXES / RES
+     ══════════════════════════════════════════════════ */
+  var AXES = [
+    { key: 'N', name: '낮 · 나트륨·수분', short: '나트륨·수분', color: '#092d74', icon: 'chDay' },
+    { key: 'E', name: '오후 · 낮 에너지', short: '낮 에너지', color: '#7a5af8', icon: 'chAfternoon' },
+    { key: 'R', name: '밤 · 회복', short: '밤 회복', color: '#e07b35', icon: 'chNight' }
+  ];
+  var SEG_PERSONA = {
+    face: '아침 거울 속 얼굴이 가장 먼저 신호를 보내는',
+    hand: '아침의 반지가 가장 먼저 신호를 보내는',
+    leg: '저녁의 다리가 가장 먼저 신호를 보내는'
+  };
+  var COMP = {
+    K:  { mark: 'K',  name: '칼륨', fn: '체내 물과 전해질 균형에 필요' },
+    Mg: { mark: 'Mg', name: '마그네슘', fn: '신경과 근육 기능 유지에 필요' },
+    B:  { mark: 'B',  name: '비타민B군', fn: '체내 에너지 생성에 필요' }
+  };
+  var RES = {
+    T0: {
+      badge: 'TYPE 00', title: '밸런스 유지형', start: null,
+      subtitle: '세 구간 모두 여유 범위 — 사이클이 잘 돌고 있는 상태',
+      summary: '낮의 나트륨·수분, 오후의 에너지, 밤의 회복까지 세 구간 모두 기준선 아래입니다. 지금의 하루 루틴이 붓기 사이클을 잘 끊어내고 있다는 뜻이에요. 이럴 때는 무언가를 더하는 것보다 지금 루틴을 지키는 게 답입니다.',
+      comp: [], price: null,
+      noneedTitle: '지금은 아무것도 권하지 않습니다',
+      noneed: [
+        { c: 'K', why: '나트륨·수분 부하가 기준선 아래입니다.' },
+        { c: 'Mg', why: '밤 회복이 이미 잘 작동하고 있습니다.' },
+        { c: 'B', why: '오후 에너지 부하가 낮습니다.' }
+      ],
+      reason: '영양제는 부하가 걸린 구간을 받쳐줄 때 의미가 있습니다. 지금 응답에서는 그런 구간이 없었습니다. 6개월 뒤 루틴이 바뀌면 그때 다시 확인해 보세요.',
+      links: []
+    },
+    T1: {
+      badge: 'TYPE 01', title: '나트륨 저장형', start: 'day',
+      subtitle: '사이클 시작점: 낮 — 점심 나트륨과 부족한 물',
+      summary: '이 사이클의 시작점은 낮입니다. 짠 점심과 부족한 수분이 나트륨·수분 축을 밀어올렸고, 오후 에너지와 밤 회복은 아직 기준선 아래에 있어요. 여러 성분을 한꺼번에 더할 이유가 없습니다. 낮 구간 하나만 잡는 게 가장 빠릅니다.',
+      /* ── 저부하 대체 카피 (P0-3) ── */
+      subtitleLow: '사이클 시작점: 낮 — 가장 먼저 관리할 구간',
+      summaryLow: '세 구간 중 위험 수준까지 올라간 곳은 없습니다. 다만 관리 순서를 정한다면 낮 구간이 먼저입니다. 나트륨·수분 축이 흔들리기 시작하면 오후 에너지와 밤 회복이 따라서 밀리기 때문입니다. 지금은 무너진 걸 되돌리는 단계가 아니라, 시작점을 미리 잡아두는 단계입니다.',
+      reasonLow: '밤 회복과 오후 에너지 축은 임계값을 넘지 않았습니다. 지금 단계에서 관리 우선순위가 가장 높은 구간은 낮이며, 칼륨은 체내 물과 전해질 균형에 필요한 성분입니다.',
+      comp: ['K'], price: '34,900원',
+      routine: '칼륨 기본 붓기 루틴', display: '젠제네틱스 칼륨',
+      official: '젠제네틱스 포타슘 칼륨 (20ea)',
+      noneedTitle: '이건 지금 필요 없습니다',
+      noneed: [
+        { c: 'Mg', why: '밤 회복 부하가 기준선 아래입니다. 지금 더하면 뭐가 효과였는지 알 수 없게 됩니다.' },
+        { c: 'B', why: '오후 에너지 부하가 낮습니다. 지금 단계에서는 권하지 않습니다.' }
+      ],
+      reason: '결과를 정한 건 낮 구간 문항들입니다. 점심 메뉴·국물·수분 응답이 나트륨·수분 축을 밀어올렸고, 밤·오후 축은 임계값을 넘지 않았습니다. 칼륨은 체내 물과 전해질 균형에 필요한 성분입니다.',
+      links: [ { label: '칼륨 루틴 시작하기', href: 'https://zengenetics.co.kr/product/detail.html?product_no=11' } ]
+    },
+    T2: {
+      badge: 'TYPE 02', title: '오후 3시 붕괴형', start: 'afternoon',
+      subtitle: '사이클 시작점: 낮에서 오후로 — 나트륨 위에 방전이 겹친 상태',
+      summary: '낮의 나트륨 부하 위에 오후의 에너지 방전이 겹쳐 있습니다. 부은 몸으로 오후를 버티느라 카페인과 당에 기대고, 그게 다시 밤과 다음 날 아침으로 이어지는 패턴이에요. 그래서 낮의 칼륨에 오후를 받칠 비타민B군을 더한 2종 구성입니다.',
+      comp: ['K', 'B'], price: '104,000원',
+      routine: '붓기 + 활력 부스터 루틴', display: '칼륨 + 비타민B컴플렉스',
+      official: '[설인아 PICK] 붓기 부스터 젠제네틱스 칼륨(2box) & 비타민B컴플렉스(1box) SET',
+      noneedTitle: '이건 지금 필요 없습니다',
+      noneed: [
+        { c: 'Mg', why: '밤 회복은 아직 무너지지 않았습니다. 지금 단계에서는 권하지 않습니다.' }
+      ],
+      reason: '나트륨·수분 축과 함께 낮 에너지 축이 임계값을 넘었습니다. 칼륨은 체내 물과 전해질 균형에, 비타민B군은 체내 에너지 생성에 필요한 성분입니다. 마그네슘을 뺀 이유는 위에 있습니다 — 빼야 할 걸 빼는 게 진단입니다.',
+      links: [ { label: '붓기·활력 루틴 시작하기', href: 'https://zengenetics.co.kr/product/detail.html?product_no=63' } ]
+    },
+    T3: {
+      badge: 'TYPE 03', title: '리셋 실패형', start: 'night',
+      subtitle: '사이클 시작점: 밤 — 아침 붓기는 어젯밤의 결과',
+      summary: '붓기가 보이는 건 아침이지만, 시작점은 어젯밤입니다. 잠들기까지 오래 걸리고 자도 개운하지 않은 밤이 리셋에 실패하면, 다음 날 아침 얼굴이 그 결과를 보여줘요. 그래서 낮의 칼륨에 밤 회복을 받칠 마그네슘을 더했습니다.',
+      comp: ['K', 'Mg'], price: '72,800원 · 개별 2종',
+      routine: '야간 붓기 루틴', display: '칼륨 + 마그네슘',
+      official: '젠제네틱스 포타슘 칼륨 (20ea) + 젠제네틱스 마그네슘 (20ea)',
+      noneedTitle: '이건 지금 필요 없습니다',
+      noneed: [
+        { c: 'B', why: '지금 문제는 에너지가 아니라 회복입니다. 비타민B군은 권하지 않습니다.' }
+      ],
+      reason: '밤 회복 축이 임계값을 넘었습니다. 아침 붓기의 시작점이 밤이라면, 낮의 나트륨 관리(칼륨)와 함께 밤 회복(마그네슘)을 받치는 게 순서입니다. 마그네슘은 신경과 근육 기능 유지에 필요한 성분입니다.',
+      links: [
+        { label: '칼륨 보러 가기', href: 'https://zengenetics.co.kr/product/detail.html?product_no=11' },
+        { label: '마그네슘 보러 가기', href: 'https://zengenetics.co.kr/product/detail.html?product_no=16', sub: true }
+      ]
+    },
+    T4: {
+      badge: 'TYPE 04', title: '풀로드 과부하형', start: 'all',
+      subtitle: '낮·오후·밤 세 구간이 모두 임계값을 넘은 상태',
+      summary: '낮의 나트륨, 오후의 에너지, 밤의 회복까지 세 구간이 전부 눌려 있습니다. 사이클 전체가 돌고 있는 상태라 세 성분이 다 맞긴 합니다. 하지만 3종을 한 번에 시작하는 건 권하지 않습니다 — 뭐가 효과인지 알 수 없고, 끊을 때 다 같이 끊게 됩니다. 순서대로 가세요.',
+      comp: ['K', 'Mg', 'B'], price: '107,500원',
+      routine: '붓기 + 회복 + 활력 · 순차 루틴', display: '칼륨 → 마그네슘 → 비타민B군',
+      official: '[칼마비 건강루틴] 젠제네틱스 칼륨 + 마그네슘 + 비타민B컴플렉스 SET',
+      seq: [
+        '<b>1~2주차 · 칼륨</b> — 낮의 나트륨·수분 균형부터 잡습니다',
+        '<b>3주차~ · 마그네슘 추가</b> — 밤 리셋을 받칩니다',
+        '<b>4주차~ · 비타민B군 추가</b> — 오후 에너지를 마지막에 더합니다'
+      ],
+      noneedTitle: '한 번에 3종을 시작하지 마세요',
+      noneed: [
+        { c: 'Mg', why: '첫 2주는 보류 — 칼륨 단독 구간에서 변화를 먼저 확인하세요.' },
+        { c: 'B', why: '첫 3주는 보류 — 마지막에 더해야 효과 판단이 가능합니다.' }
+      ],
+      reason: '세 축이 모두 임계값 이상입니다. 칼륨은 물과 전해질 균형에, 마그네슘은 신경과 근육 기능 유지에, 비타민B군은 에너지 생성에 필요한 성분입니다. 세트로 준비하되 순차로 시작하는 이유는 하나 — 첫 결제액은 같아도, 순서대로 시작해야 끝까지 갑니다.',
+      links: [ { label: '칼마비 세트로 순차 시작하기', href: 'https://zengenetics.co.kr/product/detail.html?product_no=98' } ]
+    },
+    SAFE: {
+      badge: 'NOTICE', title: '전문가 상담 우선', start: null,
+      subtitle: '지금은 영양제보다 진료가 먼저인 신호가 있습니다',
+      reason: '체크하신 항목은 일반적인 생활 붓기가 아니라 의학적 평가가 필요한 붓기일 수 있는 신호입니다. 이런 경우 영양제 섭취가 오히려 상태에 영향을 줄 수 있어, 저희는 제품을 권하지 않습니다. 병원(내과)에서 원인을 먼저 확인하신 뒤, 필요하면 그때 다시 찾아주세요.',
+      links: []
+    }
+  };
+
+  /* 결과 코드 축 고정 (P0-4) */
+  var CODE_AXIS = { T0: null, T1: 'N', T2: 'E', T3: 'R', T4: null };
+
+  var EASE = 'cubic-bezier(.22,1,.36,1)';
+  var $ = function (id) { return document.getElementById(id); };
+  var app = $('zgc-app');
+  if (!app) return;
+
+  /* 얕은 복사 — Object.assign 미지원 환경 대비 */
+  function shallowMerge(base, over) {
+    var out = {}, k;
+    for (k in base) { if (Object.prototype.hasOwnProperty.call(base, k)) out[k] = base[k]; }
+    for (k in over) { if (Object.prototype.hasOwnProperty.call(over, k)) out[k] = over[k]; }
+    return out;
+  }
+
+  /* 트래킹 — 메타 픽셀이 있을 때만 동작 */
+  function track(evt, data) {
+    try { if (typeof window.fbq === 'function') window.fbq('trackCustom', evt, data || {}); } catch (e) {}
+  }
+  /* 메타 표준 이벤트 — 캠페인 최적화·맞춤전환에 사용 가능 */
+  function trackStd(evt, data) {
+    try { if (typeof window.fbq === 'function') window.fbq('track', evt, data || {}); } catch (e) {}
+  }
+  /* 추천 제품 버튼 클릭 추적 — 결과 유형·product_no와 함께 기록 */
+  function bindProductBtns(resultType) {
+    var btns = $('zgc-result-content').querySelectorAll('.zgc-product-btn');
+    for (var i = 0; i < btns.length; i++) {
+      (function (a) {
+        a.addEventListener('click', function () {
+          var m = /product_no=(\d+)/.exec(a.getAttribute('href') || '');
+          var no = m ? m[1] : '';
+          track('EdemaCycleProductClick', { product_no: no, type: resultType });
+          trackStd('ViewContent', { content_type: 'product', content_ids: [no], content_name: a.textContent });
+        });
+      })(btns[i]);
+    }
+  }
+
+  /* ── 카카오톡 공유 ───────────────────────────────── */
+  function shareUrl() {
+    return SHARE.url || window.location.href.split('#')[0];
+  }
+  (function initKakao() {
+    if (!SHARE.kakaoKey) return;
+    var s = document.createElement('script');
+    s.src = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js';
+    s.onload = function () {
+      try {
+        if (window.Kakao && !window.Kakao.isInitialized()) window.Kakao.init(SHARE.kakaoKey);
+      } catch (e) {}
+    };
+    document.head.appendChild(s);
+  })();
+  function kakaoReady() {
+    try { return !!(SHARE.kakaoKey && window.Kakao && window.Kakao.isInitialized()); } catch (e) { return false; }
+  }
+  function copyLink(text) {
+    var done = function () { alert('테스트 링크가 복사되었어요.\n카카오톡 대화방에 붙여넣어 주세요!'); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () { legacyCopy(text); done(); });
+    } else { legacyCopy(text); done(); }
+  }
+  function legacyCopy(text) {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    } catch (e) {}
+  }
+  function shareNow(title, desc, resultType) {
+    track('EdemaCycleShare', { type: resultType, channel: 'kakao' });
+    var url = shareUrl();
+    if (kakaoReady()) {
+      try {
+        var api = window.Kakao.Share || window.Kakao.Link;
+        api.sendDefault({
+          objectType: 'feed',
+          content: {
+            title: title,
+            description: desc,
+            imageUrl: SHARE.image,
+            imageWidth: 800,
+            imageHeight: 400,
+            link: { mobileWebUrl: url, webUrl: url }
+          },
+          buttons: [ { title: '나도 테스트하기', link: { mobileWebUrl: url, webUrl: url } } ]
+        });
+        return;
+      } catch (e) {}
+    }
+    var isMobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || navigator.maxTouchPoints > 1;
+    if (navigator.share && isMobileDevice) {
+      navigator.share({ title: title, text: title + '\n' + desc, url: url })['catch'](function () {});
+      return;
+    }
+    copyLink(title + '\n' + desc + '\n' + url);
+  }
+  function shareBtnHtml() {
+    var kakaoIc = '<i><svg viewBox="0 0 24 24" style="width:100%;height:100%;display:block;"><path fill="#191919" d="M12 3.2c-5.1 0-9.2 3.3-9.2 7.3 0 2.6 1.7 4.9 4.3 6.2l-1 3.7c-.1.4.3.7.7.5l4.4-2.9c.3 0 .5.1.8.1 5.1 0 9.2-3.3 9.2-7.3S17.1 3.2 12 3.2z"/></svg></i>';
+    return '<button class="zgc-share-btn zgc-rv" id="zgc-share-btn" type="button">' + kakaoIc + '카카오톡으로 결과 공유하기</button>';
+  }
+  function bindShareBtn(title, desc, resultType) {
+    var btn = $('zgc-share-btn');
+    if (btn) btn.onclick = function () { shareNow(title, desc, resultType); };
+  }
+
+  /* ── 인스타그램 스토리 카드 ─────────────────────── */
+  function rr(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+  function wrapLines(ctx, text, maxW) {
+    var words = text.split(' ');
+    var lines = [], cur = '';
+    for (var n = 0; n < words.length; n++) {
+      var t = cur ? cur + ' ' + words[n] : words[n];
+      if (ctx.measureText(t).width > maxW && cur) { lines.push(cur); cur = words[n]; }
+      else { cur = t; }
+    }
+    if (cur) lines.push(cur);
+    return lines;
+  }
+  var STORY_FONT = '"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif';
+  function buildStoryCanvas(r, data, startName, code) {
+    var W = 1080, H = 1920;
+    var cv = document.createElement('canvas');
+    cv.width = W; cv.height = H;
+    var ctx = cv.getContext('2d');
+    var F = STORY_FONT;
+
+    function fill(c) { ctx.fillStyle = c; }
+    function tracked(text, cx, y, size, weight, color, track) {
+      ctx.font = weight + ' ' + size + 'px ' + F;
+      fill(color);
+      var w = 0, i;
+      for (i = 0; i < text.length; i++) w += ctx.measureText(text[i]).width + track;
+      w -= track;
+      var x = cx - w / 2;
+      ctx.textAlign = 'left';
+      for (i = 0; i < text.length; i++) {
+        ctx.fillText(text[i], x, y);
+        x += ctx.measureText(text[i]).width + track;
+      }
+      ctx.textAlign = 'center';
+    }
+
+    /* 배경 */
+    var g = ctx.createLinearGradient(0, 0, W * 0.35, H);
+    g.addColorStop(0, '#0d3a8e');
+    g.addColorStop(1, '#07204f');
+    fill(g); ctx.fillRect(0, 0, W, H);
+    fill('rgba(255,255,255,.06)');
+    for (var dy = 26; dy < H; dy += 44) {
+      for (var dx = 26; dx < W; dx += 44) {
+        ctx.beginPath(); ctx.arc(dx, dy, 2.2, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+    ctx.textAlign = 'center';
+
+    /* 헤더 */
+    tracked('ZENGENETICS', W / 2, 116, 42, '800', '#ffffff', 7);
+    tracked('EDEMA CYCLE ANALYSIS', W / 2, 164, 23, '700', 'rgba(255,255,255,.5)', 5);
+
+    /* ── 유형 배너 ── */
+    var bx = 56, by = 190, bw = W - 112, bh = 538;
+    var bg = ctx.createLinearGradient(bx, by, bx + bw * 0.4, by + bh);
+    bg.addColorStop(0, '#12429c');
+    bg.addColorStop(1, '#0a2f79');
+    fill(bg); rr(ctx, bx, by, bw, bh, 40); ctx.fill();
+    ctx.save();
+    rr(ctx, bx, by, bw, bh, 40); ctx.clip();
+    fill('rgba(255,255,255,.1)');
+    for (var ay = by + 18; ay < by + bh; ay += 34) {
+      for (var ax = bx + 18; ax < bx + bw; ax += 34) {
+        ctx.beginPath(); ctx.arc(ax, ay, 2, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+    ctx.restore();
+
+    fill('rgba(255,255,255,.18)');
+    rr(ctx, W / 2 - 108, by + 34, 216, 58, 29); ctx.fill();
+    tracked(data.badge, W / 2, by + 73, 27, '800', '#ffffff', 4);
+
+    ctx.font = '600 30px ' + F;
+    fill('rgba(255,255,255,.82)');
+    var pl = wrapLines(ctx, SEG_PERSONA[r.seg] + ' 당신은', bw - 140).slice(0, 2);
+    var cur = by + 148;
+    for (var p1 = 0; p1 < pl.length; p1++) { ctx.fillText(pl[p1], W / 2, cur); cur += 42; }
+
+    ctx.font = '800 84px ' + F;
+    fill('#ffffff');
+    cur += 66;
+    ctx.fillText(data.title, W / 2, cur);
+
+    cur += 42;
+    ctx.strokeStyle = 'rgba(255,255,255,.22)'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(bx + 70, cur); ctx.lineTo(bx + bw - 70, cur); ctx.stroke();
+    ctx.font = '600 26px ' + F;
+    fill('rgba(255,255,255,.8)');
+    var sl = wrapLines(ctx, data.subtitle, bw - 140).slice(0, 2);
+    cur += 42;
+    for (var s1 = 0; s1 < sl.length; s1++) { ctx.fillText(sl[s1], W / 2, cur); cur += 36; }
+
+    var st = Math.max(cur + 14, by + bh - 118);
+    ctx.beginPath(); ctx.moveTo(bx + 40, st); ctx.lineTo(bx + bw - 40, st); ctx.stroke();
+    var cols = [
+      { k: '사이클 부하 지수', v: r.index + '/100' },
+      { k: '시작 구간', v: startName },
+      { k: '결과 코드', v: code }
+    ];
+    for (var c0 = 0; c0 < 3; c0++) {
+      var colX = bx + bw / 6 + c0 * (bw / 3);
+      if (c0 > 0) {
+        ctx.beginPath(); ctx.moveTo(bx + c0 * (bw / 3), st + 12);
+        ctx.lineTo(bx + c0 * (bw / 3), st + 82); ctx.stroke();
+      }
+      tracked(cols[c0].k, colX, st + 40, 21, '700', 'rgba(255,255,255,.6)', 2);
+      ctx.font = '800 38px ' + F; fill('#ffffff');
+      ctx.fillText(cols[c0].v, colX, st + 84);
+    }
+
+    /* ── 사이클 맵 카드 ── */
+    var m1y = by + bh + 20, m1h = 466;
+    fill('#ffffff'); rr(ctx, bx, m1y, bw, m1h, 34); ctx.fill();
+    fill('#f5f7fb'); rr(ctx, bx, m1y, bw, 74, 34); ctx.fill();
+    fill('#f5f7fb'); ctx.fillRect(bx, m1y + 40, bw, 34);
+    ctx.textAlign = 'left'; ctx.font = '800 25px ' + F; fill('#242a35');
+    ctx.fillText('붓기 사이클 · 나의 시작점', bx + 34, m1y + 47);
+    ctx.textAlign = 'right'; ctx.font = '700 19px ' + F; fill('#8b93a1');
+    ctx.fillText('CYCLE MAP', bx + bw - 34, m1y + 46);
+    ctx.textAlign = 'center';
+
+    var ccx = W / 2, ccy = m1y + 218, CR = 96, NR = 34;
+    var nodes = [
+      { key: 'morning', name: '아침', x: ccx, y: ccy - CR },
+      { key: 'day', name: '낮', x: ccx + CR, y: ccy },
+      { key: 'afternoon', name: '오후', x: ccx, y: ccy + CR },
+      { key: 'night', name: '밤', x: ccx - CR, y: ccy }
+    ];
+    ctx.strokeStyle = '#d7dee9'; ctx.lineWidth = 4;
+    var gp = 0.5;
+    for (var a0 = 0; a0 < 4; a0++) {
+      var s1a = -Math.PI / 2 + a0 * Math.PI / 2 + gp;
+      var s2a = -Math.PI / 2 + (a0 + 1) * Math.PI / 2 - gp;
+      ctx.beginPath(); ctx.arc(ccx, ccy, CR, s1a, s2a); ctx.stroke();
+      var px2 = ccx + CR * Math.cos(s2a), py2 = ccy + CR * Math.sin(s2a);
+      var tg = s2a + Math.PI / 2;
+      ctx.save(); ctx.translate(px2, py2); ctx.rotate(tg);
+      fill('#aeb9ce');
+      ctx.beginPath(); ctx.moveTo(11, 0); ctx.lineTo(-6, -7); ctx.lineTo(-6, 7);
+      ctx.closePath(); ctx.fill(); ctx.restore();
+    }
+    for (var n0 = 0; n0 < 4; n0++) {
+      var nd = nodes[n0];
+      var on = (data.start === 'all' || data.start === nd.key);
+      ctx.beginPath(); ctx.arc(nd.x, nd.y, NR, 0, Math.PI * 2);
+      fill(on ? '#092d74' : '#ffffff'); ctx.fill();
+      ctx.strokeStyle = on ? '#092d74' : '#dde1e9'; ctx.lineWidth = 3; ctx.stroke();
+      ctx.font = '800 24px ' + F;
+      fill(on ? '#ffffff' : '#8b93a1');
+      ctx.fillText(nd.name, nd.x, nd.y + 9);
+      if (on && data.start !== 'all') {
+        fill('#092d74');
+        rr(ctx, nd.x - 52, nd.y - NR - 46, 104, 34, 17); ctx.fill();
+        tracked('START', nd.x, nd.y - NR - 22, 19, '800', '#ffffff', 2);
+      }
+    }
+    ctx.font = '800 24px ' + F; fill('#092d74');
+    ctx.fillText(data.start === 'all' ? '전 구간' : '붓기 사이클', ccx, m1y + m1h - 62);
+    ctx.font = '600 20px ' + F; fill('#8b93a1');
+    ctx.fillText(data.start === 'all' ? '사이클 전체 과부하'
+      : (data.start ? '시작점부터 끊어야 합니다' : '지금 루틴을 유지하세요'), ccx, m1y + m1h - 30);
+
+    /* ── 세 구간 부하 카드 ── */
+    var m2y = m1y + m1h + 14, m2h = 430;
+    fill('#ffffff'); rr(ctx, bx, m2y, bw, m2h, 34); ctx.fill();
+    fill('#f5f7fb'); rr(ctx, bx, m2y, bw, 74, 34); ctx.fill();
+    fill('#f5f7fb'); ctx.fillRect(bx, m2y + 40, bw, 34);
+    ctx.textAlign = 'left'; ctx.font = '800 25px ' + F; fill('#242a35');
+    ctx.fillText('세 구간 부하', bx + 34, m2y + 47);
+    ctx.textAlign = 'right'; ctx.font = '700 19px ' + F; fill('#8b93a1');
+    ctx.fillText('LOAD INDEX', bx + bw - 34, m2y + 46);
+
+    var segc = ['#e8f4ee', '#fdf3dd', '#fdeee3', '#fdeaea'];
+    var bcol = ['#092d74', '#7a5af8', '#e07b35'];
+    var bxs = bx + 40, bws = bw - 80, segw = bws / 4;
+    for (var q0 = 0; q0 < AXES.length; q0++) {
+      var ax2 = AXES[q0], val = r[ax2.key], tg2 = loadTag(val);
+      var ry = m2y + 162 + q0 * 112;
+      ctx.textAlign = 'left'; ctx.font = '700 26px ' + F; fill('#3d4451');
+      ctx.fillText(ax2.name, bxs, ry - 56);
+      ctx.textAlign = 'right'; ctx.font = '800 28px ' + F; fill(bcol[q0]);
+      ctx.fillText(String(val), bxs + bws - 108, ry - 56);
+      fill(tg2.bg); rr(ctx, bxs + bws - 96, ry - 80, 96, 32, 16); ctx.fill();
+      ctx.textAlign = 'center'; ctx.font = '700 20px ' + F; fill(tg2.fg);
+      ctx.fillText(tg2.name, bxs + bws - 48, ry - 57);
+      ctx.textAlign = 'left';
+      for (var g0 = 0; g0 < 4; g0++) {
+        fill(segc[g0]);
+        rr(ctx, bxs + g0 * segw + 2, ry, segw - 4, 22, 11); ctx.fill();
+      }
+      fill(bcol[q0]);
+      rr(ctx, bxs, ry + 5, Math.max(bws * val / 100, 22), 12, 6); ctx.fill();
+      var mkx = bxs + bws * val / 100;
+      ctx.beginPath(); ctx.moveTo(mkx, ry - 4);
+      ctx.lineTo(mkx - 9, ry - 20); ctx.lineTo(mkx + 9, ry - 20);
+      ctx.closePath(); ctx.fill();
+    }
+    ctx.textAlign = 'center';
+
+    /* ── 하단 CTA ── */
+    var cy2 = m2y + m2h + 74;
+    ctx.font = '800 50px ' + F; fill('#ffffff');
+    ctx.fillText('너는 어떤 유형이야?', W / 2, cy2);
+    fill('#FEE500');
+    rr(ctx, W / 2 - 250, cy2 + 32, 500, 84, 42); ctx.fill();
+    ctx.font = '800 32px ' + F; fill('#092d74');
+    ctx.fillText('1분 무료 붓기 테스트', W / 2, cy2 + 86);
+    tracked((SHARE.display || 'zengenetics.co.kr'), W / 2, cy2 + 150, 25, '600',
+            'rgba(255,255,255,.65)', 3);
+
+    return cv;
+  }
+  function downloadBlob(blob, filename) {
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 3000);
+    alert('스토리용 이미지가 저장되었어요.\n인스타그램 > 스토리 만들기 > 갤러리에서 선택해 주세요.\n(링크는 스토리의 링크 스티커로 붙일 수 있어요)');
+  }
+  function shareStory(r, data, startName, code) {
+    track('EdemaCycleShare', { type: r.type, channel: 'instagram' });
+    if (document.fonts && document.fonts.ready && !window.__zgcFontsReady) {
+      window.__zgcFontsReady = true;
+      document.fonts.ready.then(function () { shareStory(r, data, startName, code); },
+                               function () { shareStory(r, data, startName, code); });
+      return;
+    }
+    var cv = buildStoryCanvas(r, data, startName, code);
+    cv.toBlob(function (blob) {
+      if (!blob) return;
+      var canFile = false;
+      var file = null;
+      try {
+        file = new File([blob], 'edema-cycle-story.png', { type: 'image/png' });
+        canFile = !!(navigator.canShare && navigator.canShare({ files: [file] }));
+      } catch (e) { canFile = false; }
+      if (canFile) {
+        navigator.share({ files: [file], title: '붓기 사이클 테스트' })['catch'](function (err) {
+          if (!err || err.name !== 'AbortError') downloadBlob(blob, 'edema-cycle-story.png');
+        });
+      } else {
+        downloadBlob(blob, 'edema-cycle-story.png');
+      }
+    }, 'image/png');
+  }
+  function storyBtnHtml() {
+    var igIc = '<i><svg viewBox="0 0 24 24" style="width:100%;height:100%;display:block;" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.1" fill="#fff" stroke="none"/></svg></i>';
+    return '<button class="zgc-insta-btn zgc-rv" id="zgc-insta-btn" type="button">' + igIc + '인스타그램 스토리로 공유하기</button>';
+  }
+  function bindStoryBtn(r, data, startName, code) {
+    var btn = $('zgc-insta-btn');
+    if (btn) btn.onclick = function () { shareStory(r, data, startName, code); };
+  }
+
+  var state = { idx: 0, answers: [], multi: [] };
+
+  function show(name) {
+    var screens = ['zgc-intro', 'zgc-step', 'zgc-quiz', 'zgc-loading', 'zgc-result'];
+    for (var n = 0; n < screens.length; n++) {
+      $(screens[n]).style.display = (screens[n] === name) ? 'flex' : 'none';
+    }
+    $('zgc-topbar').style.display = (name === 'zgc-quiz') ? 'block' : 'none';
+    try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); }
+  }
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+  /* ── 인트로 루프 스트립 ── */
+  (function () {
+    var order = [0, 1, 2, 3];
+    var html = '';
+    for (var n = 0; n < order.length; n++) {
+      var c = CH[order[n]];
+      if (n > 0) html += '<span class="zgc-loopstrip-arrow">&#8594;</span>';
+      html += '<span class="zgc-loopstrip-item"><i>' + ic(c.icon) + '</i>' + c.name + '</span>';
+    }
+    html += '<span class="zgc-loopstrip-arrow">&#8635;</span>';
+    $('zgc-loopstrip').innerHTML = html;
+  })();
+
+  function renderTimeline() {
+    var cur = Q[state.idx].ch;
+    var html = '';
+    for (var n = 0; n < CH.length; n++) {
+      if (n > 0) html += '<div class="zgc-tl-link' + (n <= cur ? ' is-on' : '') + '"></div>';
+      var cls = n < cur ? ' is-done' : (n === cur ? ' is-now' : '');
+      html += '<div class="zgc-tl-node' + cls + '"><div class="zgc-tl-dot">' + ic(CH[n].icon) + '</div><div class="zgc-tl-name">' + CH[n].name + '</div></div>';
+    }
+    $('zgc-tl').innerHTML = html;
+    $('zgc-qnum').innerHTML = '<b>' + (state.idx + 1) + '</b> / ' + Q.length;
+    $('zgc-back-btn').disabled = (state.idx === 0);
+  }
+
+  function renderQuestion() {
+    renderTimeline();
+    var q = Q[state.idx];
+    var chp = CH[q.ch];
+    $('zgc-qpath-ic').innerHTML = ic(chp.icon);
+    $('zgc-qpath-text').textContent = 'CHAPTER ' + chp.no + ' · ' + chp.head;
+    $('zgc-question').textContent = 'Q' + (state.idx + 1) + '. ' + q.q;
+    $('zgc-qfoot').textContent = 'DATA ' + pad2(state.idx + 1) + ' / ' + pad2(Q.length);
+    $('zgc-submit-slot').innerHTML = '';
+
+    var wrap = $('zgc-options');
+    wrap.innerHTML = '';
+
+    if (q.type === 'safety') { renderSafety(q, wrap); return; }
+
+    for (var n = 0; n < q.o.length; n++) {
+      (function (n) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'zgc-option' + (state.answers[state.idx] === n ? ' is-selected' : '');
+        btn.innerHTML = '<span class="zgc-option-ic">' + ic(q.o[n].ic) + '</span><span>' + q.o[n].t + '</span>';
+        btn.onclick = function () { selectOption(n, btn); };
+        wrap.appendChild(btn);
+      })(n);
+    }
+  }
+
+  function renderSafety(q, wrap) {
+    for (var n = 0; n < q.o.length; n++) {
+      (function (n) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        var sel = state.multi.indexOf(n) !== -1;
+        btn.className = 'zgc-option' + (sel ? ' is-selected' : '');
+        btn.innerHTML = '<span class="zgc-option-ic">' + ic(q.o[n].ic) + '</span><span>' + q.o[n].t + '</span>';
+        btn.onclick = function () { toggleMulti(n); };
+        wrap.appendChild(btn);
+      })(n);
+    }
+
+    var submit = document.createElement('button');
+    submit.type = 'button';
+    submit.className = 'zgc-multi-submit';
+    submit.id = 'zgc-multi-submit';
+    submit.textContent = '결과 확인하기';
+    submit.disabled = (state.multi.length === 0);
+    submit.onclick = function () {
+      if (state.multi.length === 0) return;
+      track('EdemaCycleQ', { q: state.idx + 1 });
+      startLoading();
+    };
+    $('zgc-submit-slot').appendChild(submit);
+  }
+  function toggleMulti(n) {
+    var q = Q[state.idx];
+    var pos = state.multi.indexOf(n);
+    if (pos !== -1) { state.multi.splice(pos, 1); }
+    else if (q.o[n].none) { state.multi = [n]; }
+    else {
+      state.multi.push(n);
+      for (var m = state.multi.length - 1; m >= 0; m--) {
+        if (q.o[state.multi[m]].none) state.multi.splice(m, 1);
+      }
+    }
+    renderQuestion();
+  }
+
+  function showInterstitial(chIdx, cb) {
+    var c = CH[chIdx];
+    $('zgc-inter-step').textContent = 'CHAPTER ' + c.no + ' · ' + c.name;
+    $('zgc-inter-ic').innerHTML = ic(c.icon);
+    $('zgc-inter-title').textContent = c.head;
+    $('zgc-inter-sub').textContent = c.sub;
+    var el = $('zgc-inter-ic');
+    el.style.animation = 'none';
+    void el.offsetWidth;
+    el.style.animation = '';
+    show('zgc-step');
+    setTimeout(cb, 1350);
+  }
+  function gotoQuestion(idx, withInter) {
+    var prevCh = idx > 0 ? Q[idx - 1].ch : -1;
+    state.idx = idx;
+    if (withInter && Q[idx].ch !== prevCh) {
+      showInterstitial(Q[idx].ch, function () { show('zgc-quiz'); renderQuestion(); });
+    } else {
+      show('zgc-quiz');
+      renderQuestion();
+    }
+  }
+  function selectOption(n, btn) {
+    var opts = $('zgc-options').children;
+    for (var m = 0; m < opts.length; m++) { opts[m].className = 'zgc-option'; opts[m].disabled = true; }
+    btn.className = 'zgc-option is-selected';
+    state.answers[state.idx] = n;
+    track('EdemaCycleQ', { q: state.idx + 1 });
+    setTimeout(function () {
+      var next = state.idx + 1;
+      if (Q[next].ch !== Q[state.idx].ch) {
+        gotoQuestion(next, true);
+      } else {
+        transitionTo(function () { state.idx = next; renderQuestion(); });
+      }
+    }, 300);
+  }
+  function transitionTo(fn) {
+    var card = $('zgc-qcard');
+    card.className = 'zgc-qcard zgc-transitioning';
+    setTimeout(function () { fn(); card.className = 'zgc-qcard'; }, 240);
+  }
+
+  function startLoading() {
+    show('zgc-loading');
+    var ring = $('zgc-ring-fg');
+    var pctEl = $('zgc-ring-pct');
+    var CIRC = 326.7;
+    for (var c = 0; c < 5; c++) { $('zgc-chk-' + c).className = 'zgc-check'; }
+    ring.style.strokeDashoffset = CIRC;
+    pctEl.textContent = '0%';
+    var DURATION = 3400;
+    var start = new Date().getTime();
+    var timer = setInterval(function () {
+      var t = Math.min((new Date().getTime() - start) / DURATION, 1);
+      var eased = 1 - Math.pow(1 - t, 2.2);
+      pctEl.textContent = Math.round(eased * 100) + '%';
+      ring.style.strokeDashoffset = String(CIRC * (1 - eased));
+      var stage = Math.min(Math.floor(eased * 5), 4);
+      for (var c = 0; c < 5; c++) {
+        var el = $('zgc-chk-' + c);
+        if (c < stage) { el.className = 'zgc-check is-on'; }
+        else if (c === stage) { el.className = 'zgc-check is-on is-now'; }
+      }
+      if (t >= 1) {
+        clearInterval(timer);
+        for (var c2 = 0; c2 < 5; c2++) { $('zgc-chk-' + c2).className = 'zgc-check is-on'; }
+        setTimeout(renderResult, 350);
+      }
+    }, 16);
+  }
+
+  /* ══════════════════════════════════════════════════
+     6. calc() — 채점·분기
+     ※ seg 문항도 채점 (P0-2), T4에 N 하한선 (P1-2)
+     ══════════════════════════════════════════════════ */
+  function calc() {
+    var sum = { N: 0, R: 0, E: 0 }, max = { N: 0, R: 0, E: 0 };
+    var seg = 'face';
+    var quotes = [];
+    for (var n = 0; n < Q.length; n++) {
+      var q = Q[n];
+      if (q.type === 'seg') {
+        var p0 = q.o[state.answers[n] || 0];
+        seg = p0.seg;
+        if (q.w) {
+          for (var a0 in q.w) {
+            max[a0] += 2 * q.w[a0];
+            sum[a0] += p0.s * q.w[a0];
+          }
+          if (p0.s === 2) quotes.push(p0.t);
+        }
+        continue;
+      }
+      if (q.type === 'safety') continue;
+      var picked = q.o[state.answers[n] || 0];
+      for (var a in q.w) {
+        max[a] += 2 * q.w[a];
+        sum[a] += picked.s * q.w[a];
+      }
+      if (picked.s === 2) quotes.push(picked.t);
+    }
+    var N = Math.round(sum.N / max.N * 100);
+    var R = Math.round(sum.R / max.R * 100);
+    var E = Math.round(sum.E / max.E * 100);
+    var index = Math.round(N * 0.45 + R * 0.35 + E * 0.20);
+
+    /* 세이프티 게이트 — ⚠ 하나라도 선택 시 상품 추천 전면 비노출 */
+    var flags = [];
+    var sq = Q[Q.length - 1];
+    for (var m = 0; m < state.multi.length; m++) {
+      if (sq.o[state.multi[m]].warn) flags.push(sq.o[state.multi[m]]);
+    }
+
+    var type;
+    if (flags.length > 0) type = 'SAFE';
+    else if (Math.max(N, R, E) < TUNING.LOW) type = 'T0';
+    else if (N >= TUNING.LOW && R >= TUNING.CO_R && E >= TUNING.CO_E) type = 'T4';
+    else if (R >= TUNING.CO_R) type = 'T3';
+    else if (E >= TUNING.CO_E) type = 'T2';
+    else type = 'T1';
+
+    var domKey = 'N', domVal = N;
+    if (E > domVal) { domKey = 'E'; domVal = E; }
+    if (R > domVal) { domKey = 'R'; domVal = R; }
+
+    return { type: type, N: N, R: R, E: E, index: index, seg: seg, quotes: quotes, flags: flags, domKey: domKey, domVal: domVal };
+  }
+
+  function loadTag(v) {
+    if (v < 44) return { name: '여유', bg: '#e8f4ee', fg: '#12845f' };
+    if (v < 62) return { name: '주의', bg: '#fdf3dd', fg: '#b57f1d' };
+    if (v < 80) return { name: '눌림', bg: '#fdeee3', fg: '#c96a24' };
+    return { name: '과부하', bg: '#fdeaea', fg: '#d64545' };
+  }
+
+  /* ══════════════════════════════════════════════════
+     7. cycleSVG()
+     ══════════════════════════════════════════════════ */
+  function cycleSVG(start) {
+    var W = 280, H = 235, cx = 140, cy = 116, R = 76;
+    var nodes = [
+      { key: 'morning', name: '아침', icon: 'chMorning', x: cx, y: cy - R },
+      { key: 'day', name: '낮', icon: 'chDay', x: cx + R, y: cy },
+      { key: 'afternoon', name: '오후', icon: 'chAfternoon', x: cx, y: cy + R },
+      { key: 'night', name: '밤', icon: 'chNight', x: cx - R, y: cy }
+    ];
+    function isOn(k) { return start === 'all' || start === k; }
+    var svg = '<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">';
+    svg += '<defs><marker id="zgc-arr" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M1 1l5 3-5 3z" fill="#aeb9ce"/></marker></defs>';
+    var gap = 0.42;
+    for (var n = 0; n < 4; n++) {
+      var a1 = -Math.PI / 2 + n * Math.PI / 2 + gap;
+      var a2 = -Math.PI / 2 + (n + 1) * Math.PI / 2 - gap;
+      var x1 = cx + R * Math.cos(a1), y1 = cy + R * Math.sin(a1);
+      var x2 = cx + R * Math.cos(a2), y2 = cy + R * Math.sin(a2);
+      svg += '<path d="M' + x1.toFixed(1) + ' ' + y1.toFixed(1) + ' A' + R + ' ' + R + ' 0 0 1 ' + x2.toFixed(1) + ' ' + y2.toFixed(1) + '" fill="none" stroke="#d7dee9" stroke-width="1.8" marker-end="url(#zgc-arr)"/>';
+    }
+    for (var m = 0; m < 4; m++) {
+      var nd = nodes[m];
+      var on = isOn(nd.key);
+      svg += '<circle cx="' + nd.x + '" cy="' + nd.y + '" r="21" fill="' + (on ? '#092d74' : '#fff') + '" stroke="' + (on ? '#092d74' : '#dde1e9') + '" stroke-width="1.6"/>';
+      svg += '<g transform="translate(' + (nd.x - 9) + ' ' + (nd.y - 9) + ') scale(0.75)" fill="none" stroke="' + (on ? '#fff' : '#8b93a1') + '" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + I[nd.icon] + '</g>';
+      var ly = nd.y + (nd.key === 'morning' ? -32 : 38);
+      svg += '<text x="' + nd.x + '" y="' + ly + '" text-anchor="middle" font-size="11" font-weight="700" fill="' + (on ? '#092d74' : '#9aa1ad') + '" font-family="inherit">' + nd.name + '</text>';
+      if (on && start !== 'all') {
+        svg += '<rect x="' + (nd.x - 22) + '" y="' + (nd.y - 40) + '" width="44" height="15" rx="7.5" fill="#092d74"/>';
+        svg += '<text x="' + nd.x + '" y="' + (nd.y - 29) + '" text-anchor="middle" font-size="8.5" font-weight="800" letter-spacing="1" fill="#fff" font-family="inherit">START</text>';
+      }
+    }
+    if (start === 'all') {
+      svg += '<text x="' + cx + '" y="' + (cy - 2) + '" text-anchor="middle" font-size="11.5" font-weight="800" fill="#092d74" font-family="inherit">전 구간</text>';
+      svg += '<text x="' + cx + '" y="' + (cy + 13) + '" text-anchor="middle" font-size="9.5" font-weight="600" fill="#8b93a1" font-family="inherit">사이클 전체 과부하</text>';
+    } else if (start) {
+      svg += '<text x="' + cx + '" y="' + (cy - 2) + '" text-anchor="middle" font-size="11.5" font-weight="800" fill="#092d74" font-family="inherit">붓기 사이클</text>';
+      svg += '<text x="' + cx + '" y="' + (cy + 13) + '" text-anchor="middle" font-size="9.5" font-weight="600" fill="#8b93a1" font-family="inherit">시작점부터 끊어야 합니다</text>';
+    } else {
+      svg += '<text x="' + cx + '" y="' + (cy - 2) + '" text-anchor="middle" font-size="11.5" font-weight="800" fill="#12845f" font-family="inherit">사이클 안정</text>';
+      svg += '<text x="' + cx + '" y="' + (cy + 13) + '" text-anchor="middle" font-size="9.5" font-weight="600" fill="#8b93a1" font-family="inherit">지금 루틴을 유지하세요</text>';
+    }
+    svg += '</svg>';
+    return svg;
+  }
+
+  function todayStr() {
+    var d = new Date();
+    return d.getFullYear() + '.' + pad2(d.getMonth() + 1) + '.' + pad2(d.getDate());
+  }
+
+  /* ══════════════════════════════════════════════════
+     8. renderResult()
+     ══════════════════════════════════════════════════ */
+  function renderResult() {
+    var r = calc();
+    var data = RES[r.type];
+    track('EdemaCycleResult', { type: r.type });
+    trackStd('CompleteRegistration', { content_name: 'edema_cycle_test', status: r.type });
+
+    /* T1 저부하 카피 전환 (P0-3) */
+    var t1Low = (r.type === 'T1' && r.N < T1_LOW_N);
+    if (t1Low) {
+      data = shallowMerge(data, {
+        subtitle: data.subtitleLow,
+        summary:  data.summaryLow,
+        reason:   data.reasonLow
+      });
+    }
+
+    var html = '';
+
+    html += '<div class="zgc-report-head zgc-rv">';
+    html += '<span class="zgc-report-title">CYCLE REPORT</span>';
+    html += '<span class="zgc-report-meta">' + todayStr() + ' · 12문항 응답 기반</span>';
+    html += '</div>';
+
+    if (r.type === 'SAFE') {
+      renderSafeResult(html, r, data);
+      return;
+    }
+
+    /* 결과 코드 축 고정 (P0-4) */
+    var axisKey = CODE_AXIS[r.type] || r.domKey;
+    var code = r.type + '-' + axisKey + r[axisKey];
+    var startName = { day: '낮', afternoon: '오후', night: '밤', all: '전 구간' }[data.start] || '없음';
+
+    html += '<div class="zgc-banner zgc-rv">';
+    html += '<div class="zgc-banner-badge">' + data.badge + '</div>';
+    html += '<div class="zgc-banner-persona">' + SEG_PERSONA[r.seg] + ' 당신은</div>';
+    html += '<h3 class="zgc-banner-title">' + data.title + '</h3>';
+    html += '<span class="zgc-banner-subtitle">' + data.subtitle + '</span>';
+    html += '<div class="zgc-banner-stats">';
+    html += '<div class="zgc-banner-stat"><div class="zgc-banner-stat-k">사이클 부하 지수</div><div class="zgc-banner-stat-v">' + r.index + '<span style="opacity:.6;font-size:11px;">/100</span></div></div>';
+    html += '<div class="zgc-banner-stat"><div class="zgc-banner-stat-k">시작 구간</div><div class="zgc-banner-stat-v">' + startName + '</div></div>';
+    html += '<div class="zgc-banner-stat"><div class="zgc-banner-stat-k">결과 코드</div><div class="zgc-banner-stat-v">' + code + '</div></div>';
+    html += '</div></div>';
+
+    var order = ['T0', 'T1', 'T2', 'T3', 'T4'];
+    html += '<div class="zgc-spectrum zgc-rv">';
+    for (var s = 0; s < order.length; s++) {
+      html += '<div class="zgc-spec-type' + (order[s] === r.type ? ' is-me' : '') + '">';
+      html += '<div class="zgc-spec-type-no">' + RES[order[s]].badge.replace('TYPE ', 'T') + '</div>';
+      html += '<div class="zgc-spec-type-name">' + RES[order[s]].title + '</div>';
+      html += '</div>';
+    }
+    html += '</div>';
+
+    html += '<div class="zgc-card zgc-rv">';
+    html += '<div class="zgc-card-head"><span class="zgc-card-head-title">붓기 사이클 · 나의 시작점</span><span class="zgc-card-head-tag zgc-mono">CYCLE MAP</span></div>';
+    html += '<div class="zgc-cycle-wrap">' + cycleSVG(data.start) + '</div>';
+    if (data.start === 'night') {
+      html += '<div class="zgc-cycle-note">붓기가 보이는 건 <b>아침</b>이지만, 사이클이 시작되는 건 <b>밤</b>입니다.<br>화살표를 거슬러 올라가면 어젯밤이 나옵니다.</div>';
+    } else if (data.start === 'day') {
+      if (t1Low) {
+        html += '<div class="zgc-cycle-note">사이클이 시작된다면 <b>낮</b>부터입니다.<br>아직 여유가 있을 때 잡아두는 구간입니다.</div>';
+      } else {
+        html += '<div class="zgc-cycle-note">사이클은 <b>낮</b>에서 시작됩니다.<br>점심의 나트륨과 부족한 물이 다음 날 아침까지 흘러갑니다.</div>';
+      }
+    } else if (data.start === 'afternoon') {
+      html += '<div class="zgc-cycle-note">낮의 부하가 <b>오후 방전</b>으로 이어지고 있습니다.<br>여기서 카페인·당에 기대면 사이클이 밤으로 넘어갑니다.</div>';
+    } else if (data.start === 'all') {
+      html += '<div class="zgc-cycle-note">한 구간이 아니라 <b>사이클 전체</b>가 돌고 있습니다.<br>그래서 순서를 정해 하나씩 끊어야 합니다.</div>';
+    } else {
+      html += '<div class="zgc-cycle-note">지금은 어느 구간에도 START가 켜지지 않았습니다.<br><b>이 상태를 유지하는 것</b>이 최선의 관리입니다.</div>';
+    }
+    html += '</div>';
+
+    html += '<div class="zgc-card zgc-rv">';
+    html += '<div class="zgc-card-head"><span class="zgc-card-head-title">세 구간 부하</span><span class="zgc-card-head-tag zgc-mono">LOAD INDEX</span></div>';
+    html += '<div class="zgc-score-rows">';
+    for (var n = 0; n < AXES.length; n++) {
+      var ax = AXES[n];
+      var v = r[ax.key];
+      var tg = loadTag(v);
+      html += '<div class="zgc-score-row">';
+      html += '<div class="zgc-score-label"><span class="zgc-score-label-l"><i style="color:' + ax.color + ';">' + ic(ax.icon) + '</i>' + ax.name + '</span>';
+      html += '<span class="zgc-score-right"><span class="zgc-score-pct" id="zgc-pct-' + n + '" style="color:' + ax.color + ';">0</span>';
+      html += '<span class="zgc-score-tag" style="background:' + tg.bg + ';color:' + tg.fg + ';">' + tg.name + '</span></span></div>';
+      html += '<div style="position:relative;">';
+      html += '<div id="zgc-mk-' + n + '" style="position:absolute;top:-7px;left:0%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid ' + ax.color + ';transition:left .9s ' + EASE + ';"></div>';
+      html += '<div style="position:relative;display:flex;gap:2px;height:14px;border-radius:7px;overflow:hidden;">';
+      html += '<div style="flex:1;background:#e8f4ee;"></div><div style="flex:1;background:#fdf3dd;"></div><div style="flex:1;background:#fdeee3;"></div><div style="flex:1;background:#fdeaea;"></div>';
+      html += '<div id="zgc-fill-' + n + '" data-pct="' + v + '" style="position:absolute;left:0;right:0;top:4px;bottom:4px;border-radius:3px;background:' + ax.color + ';transform:scaleX(0);transform-origin:left center;transition:transform .9s ' + EASE + ';"></div>';
+      html += '</div>';
+      html += '<div class="zgc-range-labels"><span>여유</span><span>주의</span><span>눌림</span><span>과부하</span></div>';
+      html += '</div></div>';
+    }
+    html += '</div></div>';
+
+    html += '<p class="zgc-summary zgc-rv">' + data.summary + '</p>';
+    if (r.quotes.length > 0) {
+      var qt = r.quotes.slice(0, 2);
+      var qhtml = '';
+      for (var m2 = 0; m2 < qt.length; m2++) {
+        qhtml += '<b>&ldquo;' + qt[m2] + '&rdquo;</b>' + (m2 < qt.length - 1 ? '<br>' : '');
+      }
+      html += '<div class="zgc-quote zgc-rv">' + qhtml + '<br>&mdash; 직접 고르신 답변입니다. 이 결과의 근거이기도 합니다.</div>';
+    }
+
+    if (data.comp.length > 0) {
+      html += '<div class="zgc-product-card zgc-rv">';
+      html += '<div class="zgc-card-head"><span class="zgc-card-head-title">맞춤 추천 루틴</span><span class="zgc-card-head-tag zgc-mono">RECOMMENDED</span></div>';
+      html += '<div class="zgc-product-body">';
+      html += '<span class="zgc-product-label">' + data.routine + '</span>';
+      html += '<div class="zgc-product-name">' + data.display + '</div>';
+      html += '<p class="zgc-product-official">' + data.official + ' · ' + data.price + '</p>';
+      html += '<div class="zgc-product-comp">';
+      for (var c = 0; c < data.comp.length; c++) {
+        var cp = COMP[data.comp[c]];
+        html += '<span class="zgc-comp-pill"><i>' + markSvg(cp.mark) + '</i>' + cp.name + '</span>';
+      }
+      html += '</div>';
+      if (data.seq) {
+        html += '<div class="zgc-seq">';
+        for (var sq2 = 0; sq2 < data.seq.length; sq2++) {
+          html += '<div class="zgc-seq-step"><span class="zgc-seq-no">' + (sq2 + 1) + '</span><span>' + data.seq[sq2] + '</span></div>';
+        }
+        html += '</div>';
+      }
+      for (var l = 0; l < data.links.length; l++) {
+        html += '<a class="zgc-product-btn' + (data.links[l].sub ? ' is-sub' : '') + '" href="' + data.links[l].href + '" target="_blank" rel="noopener">' + data.links[l].label + '</a>';
+      }
+      html += '</div></div>';
+    }
+
+    html += '<div class="zgc-noneed zgc-rv">';
+    html += '<div class="zgc-card-head"><span class="zgc-card-head-title">' + data.noneedTitle + '</span><span class="zgc-card-head-tag zgc-mono">NOT NOW</span></div>';
+    html += '<div class="zgc-noneed-body">';
+    for (var nn = 0; nn < data.noneed.length; nn++) {
+      var np = COMP[data.noneed[nn].c];
+      html += '<div class="zgc-noneed-row"><span class="zgc-noneed-ic">' + markSvg(np.mark) + '</span>';
+      html += '<div><div class="zgc-noneed-t">' + np.name + '</div><div class="zgc-noneed-d">' + data.noneed[nn].why + '</div></div></div>';
+    }
+    html += '</div></div>';
+
+    html += '<div class="zgc-reason zgc-rv">';
+    html += '<div class="zgc-reason-title">왜 이 결과인가요?</div>';
+    html += '<p class="zgc-reason-text">' + data.reason + '</p>';
+    html += '</div>';
+
+    html += shareBtnHtml();
+    html += storyBtnHtml();
+
+    $('zgc-result-content').innerHTML = html;
+    bindProductBtns(r.type);
+    bindShareBtn(
+      '내 붓기 유형은 "' + data.title + '"',
+      '사이클 부하 지수 ' + r.index + '/100 · 시작 구간 ' + startName + ' — 하루를 따라가는 1분 테스트, 너는 어떤 유형이야?',
+      r.type
+    );
+    bindStoryBtn(r, data, startName, code);
+    animateResult(r);
+  }
+
+  function renderSafeResult(head, r, data) {
+    var html = head;
+    html += '<div class="zgc-banner zgc-rv">';
+    html += '<div class="zgc-banner-badge">' + data.badge + '</div>';
+    html += '<h3 class="zgc-banner-title">' + data.title + '</h3>';
+    html += '<span class="zgc-banner-subtitle" style="border-top:none;padding-top:0;">' + data.subtitle + '</span>';
+    html += '</div>';
+
+    html += '<div class="zgc-card zgc-rv">';
+    html += '<div class="zgc-card-head"><span class="zgc-card-head-title">확인이 필요한 항목</span><span class="zgc-card-head-tag zgc-mono">CHECK FIRST</span></div>';
+    html += '<div class="zgc-safe-list">';
+    for (var n = 0; n < r.flags.length; n++) {
+      html += '<div class="zgc-safe-item"><i>' + ic('warn') + '</i>' + r.flags[n].t + '</div>';
+    }
+    html += '</div></div>';
+
+    html += '<div class="zgc-reason zgc-rv">';
+    html += '<div class="zgc-reason-title">왜 제품을 권하지 않나요?</div>';
+    html += '<p class="zgc-reason-text">' + data.reason + '</p>';
+    html += '</div>';
+
+    html += shareBtnHtml();
+
+    $('zgc-result-content').innerHTML = html;
+    bindShareBtn(
+      '붓기 사이클 테스트',
+      '하루를 따라가는 12개 질문으로 내 붓기의 시작점을 찾아주는 1분 테스트',
+      'SAFE'
+    );
+    var rvs = $('zgc-result-content').querySelectorAll('.zgc-rv');
+    for (var v = 0; v < rvs.length; v++) { rvs[v].style.animationDelay = (v * 0.09) + 's'; }
+    show('zgc-result');
+  }
+
+  function animateResult(r) {
+    var rvs = $('zgc-result-content').querySelectorAll('.zgc-rv');
+    for (var v = 0; v < rvs.length; v++) { rvs[v].style.animationDelay = (v * 0.09) + 's'; }
+    show('zgc-result');
+    setTimeout(function () {
+      for (var n = 0; n < AXES.length; n++) {
+        (function (n) {
+          var fill = $('zgc-fill-' + n);
+          var mk = $('zgc-mk-' + n);
+          var pctEl = $('zgc-pct-' + n);
+          if (!fill || !pctEl) return;
+          var target = parseInt(fill.getAttribute('data-pct'), 10);
+          if (isNaN(target)) target = 0;
+          fill.style.transform = 'scaleX(' + (target / 100) + ')';
+          if (mk) mk.style.left = target + '%';
+          var cur = 0, steps = 24;
+          var timer = setInterval(function () {
+            cur++;
+            pctEl.textContent = String(Math.round(target * (1 - Math.pow(1 - cur / steps, 2))));
+            if (cur >= steps) clearInterval(timer);
+          }, 900 / 24);
+          setTimeout(function () { clearInterval(timer); pctEl.textContent = String(target); }, 1600);
+        })(n);
+      }
+    }, 350);
+  }
+
+  /* ── 이벤트 바인딩 ── */
+  $('zgc-start-btn').onclick = function () {
+    state.answers = [];
+    state.multi = [];
+    track('EdemaCycleStart');
+    gotoQuestion(0, true);
+  };
+  $('zgc-back-btn').onclick = function () {
+    if (state.idx === 0) return;
+    transitionTo(function () { state.idx--; renderQuestion(); });
+  };
+  $('zgc-retry-btn').onclick = function () {
+    state.idx = 0;
+    state.answers = [];
+    state.multi = [];
+    show('zgc-intro');
+  };
+})();
+</script>
+
+</body>
+</html>
