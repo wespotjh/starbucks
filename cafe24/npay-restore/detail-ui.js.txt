@@ -453,6 +453,8 @@ var ZG_MOVE_TOTALPRODUCTS = true; /* true = ≤767px 에서 선택목록(#totalP
     armSheetOpen();
     watchAppPay();
     watchSheet();
+    dropStrayGt();
+    watchEmptyWidget();
     bindFold();
     bindChips();
     bindAddProduct();
@@ -1087,8 +1089,60 @@ var ZG_MOVE_TOTALPRODUCTS = true; /* true = ≤767px 에서 선택목록(#totalP
     if (!(ah > 0)) return;
     var sum = $('.infoArea-footer .zg-sum', layer);
     var sh = sum ? Math.round(sum.getBoundingClientRect().height) : 0;
-    layer.style.setProperty('--zg-act-h', ah + 'px');
-    layer.style.setProperty('--zg-tub-pb', (ah + sh + 18) + 'px');
+    /* 같은 값이면 쓰지 않는다 — 스크롤 중 스타일 재기록이 iOS 관성 스크롤을 끊는 것을 막는다 (R-15) */
+    var actH = ah + 'px', tubPb = (ah + sh + 18) + 'px';
+    if (layer.style.getPropertyValue('--zg-act-h') !== actH) layer.style.setProperty('--zg-act-h', actH);
+    if (layer.style.getPropertyValue('--zg-tub-pb') !== tubPb) layer.style.setProperty('--zg-tub-pb', tubPb);
+  }
+
+  /* ------------------------------------------------- R-17 썸네일 아래 빈 카드
+   * 알파리뷰 「썸네일하단 심플포토」 위젯(.alpha_widget[data-code="8d644bd9"], .infoArea 바로 앞)은
+   * 포토리뷰가 없는 상품에서 실기기에 빈 흰 카드 프레임만 그린다(2026-10-23 실기기 확인, 헤드리스는 20px 패딩만).
+   * → 실제로 로드된 사진이나 글이 없으면 `data-zg-empty="1"` 을 달아 CSS(R-17)로 감춘다.
+   *   사진이 나중에 로드되면 다시 보인다. 위젯 노드는 지우지 않는다(알파리뷰 스크립트가 자기 노드를 찾는다). */
+  var EMPTY_WIDGET_SEL = '.alpha_widget[data-code="8d644bd9"]';
+
+  function widgetHasContent(w) {
+    var imgs = $$('img', w);
+    for (var i = 0; i < imgs.length; i++) {
+      /* 렌더 폭은 보지 않는다 — 감춰진 동안(display:none) 폭이 0 이라 다시 못 살아난다. 1px 추적 픽셀은 뺀다 */
+      if (imgs[i].complete && imgs[i].naturalWidth > 8 && imgs[i].naturalHeight > 8) return true;
+    }
+    var t = squash(txt(w)).replace(/[>\u203A\u00D7\u2715\s]/g, '');
+    return t.length > 0;
+  }
+
+  function checkEmptyWidget() {
+    $$(EMPTY_WIDGET_SEL, root || document).forEach(function (w) {
+      var empty = !widgetHasContent(w);
+      if (empty) w.setAttribute('data-zg-empty', '1'); else w.removeAttribute('data-zg-empty');
+    });
+  }
+
+  function watchEmptyWidget() {
+    var w = $(EMPTY_WIDGET_SEL, root || document);
+    if (!w) return;
+    checkEmptyWidget();
+    var MO = window.MutationObserver || window.WebKitMutationObserver;
+    if (MO) {
+      var mo = new MO(function () { checkEmptyWidget(); });
+      try { mo.observe(w, { childList: true, subtree: true, attributes: true, attributeFilter: ['src', 'class', 'style'] }); } catch (e) {}
+    }
+    on(w, 'load', checkEmptyWidget, true);   /* 사진 로드 완료는 버블링하지 않는다 — 캡처로 받는다 */
+    [600, 1500, 3000, 6000].forEach(function (ms) { setTimeout(checkEmptyWidget, ms); });
+  }
+
+  /* ------------------------------------------------- R-16 템플릿 잔여 문자 '>'
+   * product/detail.html 의 「추가 구성 상품(크로스셀) — 2026-09-11 개편으로 제거」 주석이
+   * `-->` 뒤에 `>` 를 하나 더 달고 있어(라이브 실측 `-->&gt;`) `.fix-pc-l` 안에 '>' 글자가 그려진다.
+   * 템플릿에서 그 한 글자를 지우는 것이 정석이고, 지워지면 이 함수는 아무 일도 하지 않는다.
+   * 여기서는 `.fix-pc-l` 직속 텍스트 노드 중 정확히 '>' 인 것만 걷는다. */
+  function dropStrayGt() {
+    $$('.fix-pc-l', root).forEach(function (col) {
+      Array.prototype.slice.call(col.childNodes).forEach(function (n) {
+        if (n.nodeType === 3 && n.textContent.trim() === '>') col.removeChild(n);
+      });
+    });
   }
 
   function watchSheet() {

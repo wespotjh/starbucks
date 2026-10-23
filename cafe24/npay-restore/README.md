@@ -23,6 +23,14 @@ zengenetics.co.kr(카페24) 상품 상세의 「장바구니 · 구매하기」 
 
 미리보기: `preview-proposal.png` (현재 vs 제안, PC/모바일), `preview-pc.png`, `preview-mobile.png`
 
+## 추가 수정 이력 (2026-10-23)
+
+| 차수 | 내용 | 파일 |
+|---|---|---|
+| 2차 | 모바일 하단바 바닥 여백 16px(+safe-area), 네이버 모바일 마크업(MA_1)에서 글자 세로 중앙 | CSS R-14, R-12b |
+| 3차 | PC 「N pay 구매」 글리프 12→16px (스프라이트 63→90px) | CSS R-12b |
+| 4차 | iOS 시트 관성 스크롤 복구(뼈대 `touch-action:none` 제거), `>` 잔여 문자 제거, 빈 알파리뷰 카드 숨김 | CSS R-15·R-17, JS R-16·R-17, fitSheet |
+
 ## 적용 순서
 
 1. **`ds/css/detail.css`** 맨 끝에 `detail.css.append.css` 내용을 그대로 붙인다.
