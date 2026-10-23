@@ -1,0 +1,1480 @@
+/* ============================================================================
+ * ds/css/detail.css — 젠제네틱스 상품 상세 재스킨 (칼륨 product_no=11 기준, 9종 공용)
+ *
+ * 설계 원칙 (디자인 검수 / 브리프 정정 5)
+ *   1) 모든 규칙은 래퍼 클래스 `.zg-detail` 로 시작한다 → 구체도 +1 로 이긴다.
+ *      스킨이 `body:not(#userStyle) …` 처럼 ID 를 2개 쓰는 곳은 그 앞부분을 그대로
+ *      복사한 뒤 `.zg-detail` 을 끼워 넣는다 (ID 개수를 맞춰야 이긴다).
+ *   2) **새 `important-플래그` 를 한 개도 쓰지 않는다.**
+ *   3) 이기지 않기로 결정한 3가지 (건드리면 기능이 깨진다):
+ *      - `.thumbnail__list > li { display:block important-플래그 }`  ← 갤러리 4장→1장 방지. display 미선언.
+ *      - `#totalProducts .quantity { width:93px important-플래그 }`  ← min-width 로 우회.
+ *      - `.info-review-summary__star svg { fill:… important-플래그 }` ← 별 색 양보(스킨 노랑 수용).
+ *   4) 브레이크포인트는 1023 / 1024 하나만 쓴다.
+ * ==========================================================================*/
+
+/* ---------------------------------------------------------------- 0. 토큰 */
+.zg-detail {
+  /* 색 */
+  --zg-bg: #FFFFFF;
+  --zg-bg-2: #FBFAF8;
+  --zg-ink: #15161A;
+  --zg-ink-2: #5F626C;
+  --zg-ink-3: #93959D;
+  --zg-ink-note: #5E6E96;
+  --zg-hair: #E9E8E4;
+  --zg-hair-2: #D8D6D0;
+  --zg-navy: #1A2B6B;
+  --zg-acc: #D9641F;
+  --zg-acc-soft: #F6E3D5;
+  --zg-acc-deep: #8F3608;
+  --zg-ok: #127A4B;
+
+  /* 서체 — 한글은 스킨이 자체 호스팅 중인 Pretendard Variable 재사용.
+     IBM Plex Sans KR 은 로드하지 않는다(한글 웹폰트 2벌 = LCP 붕괴). */
+  --zg-f-b: "Pretendard Variable", "Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, "Malgun Gothic", sans-serif;
+  --zg-f-d: "Archivo", "Pretendard Variable", system-ui, sans-serif;
+  --zg-f-m: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* 라운드 */
+  --zg-r-s: 6px;
+  --zg-r-m: 9px;
+  --zg-r-l: 11px;
+  --zg-r-xl: 13px;
+  --zg-r-pill: 999px;
+
+  /* 모션 */
+  --zg-t-fast: .16s;
+  --zg-t-mid: .2s;
+  --zg-t-slow: .3s ease;
+
+  /* 레이어 — 스킨 실측: .mobile-layer-bg 11 / .mobile-layer.fixed 11 / .mobile-fix-footer 10.
+     [근거] 스킨 원값 10 을 그대로 쓴다. 11 이상이면 바가 바텀시트·딤 위로 올라온다. */
+  --zg-z-bar: 10;
+  --zg-z-toast: 13;
+
+  /* 치수 */
+  --zg-w-max: 520px;
+  --zg-pad-x: 20px;
+  --zg-bar-h: 54px;
+  --zg-tap: 44px;
+}
+
+/* --------------------------------------------------------- 1. 공통 타이포 */
+/* [K-18 AC3 / 검수] 타이포를 `.zg-detail` 에 걸면 리뷰·반품/교환·상품문의 탭 내부까지 상속된다.
+   → 상속 선언은 상품정보 영역(.xans-product-detail)과 상세 영역(#prdDetail)에만 건다.
+   `.zg-detail` 에는 토큰과 배경(비상속)만 남긴다. */
+.zg-detail { background: var(--zg-bg); }
+
+.zg-detail .xans-product-detail,
+.zg-detail #prdDetail {
+  font-family: var(--zg-f-b);
+  font-weight: 400;
+  letter-spacing: -.01em;
+  line-height: 1.7;
+  color: var(--zg-ink);
+  -webkit-text-size-adjust: 100%;
+}
+
+/* [근거] 하단 고정바 예약.
+   경위 3단계를 그대로 남긴다 — 같은 함정을 다음 사람이 다시 밟지 않도록.
+     시도 1: `.zg-detail{padding-bottom}` → `.zg-detail` 은 푸터를 포함하지 않아 무효 + 엉뚱한 여백.
+     시도 2: `.footer{margin-bottom}`     → **스크롤 가능 영역은 자손의 보더박스로만 정해지고
+                                          마지막 블록의 바깥 여백은 포함되지 않는다.**
+                                          실측 scrollHeight 가 safe 0/34 양쪽 5364 로 동일했다. 무효.
+     현재: **스크롤 컨테이너(body) 의 padding** 으로 확보한다. 이것만 scrollHeight 를 늘린다.
+   ⚠ `.footer` 의 padding 은 `css/module/product/detail.css:4248`(≤1023px)에서
+      `padding-bottom:100px important-플래그` 로 잠겨 있어 이길 수 없다(그 100px 은 그대로 쓴다).
+   값은 **매직 상수 없이** 정한다:
+     바 높이 = 82 + safe-area   (아래 바 규칙에서 82px 확정)
+     예약    = 100(스킨) + P
+     여유    = 100 + P - (82 + safe-area) = 18 + P - safe-area
+   → `P = safe-area` 로 두면 여유가 **safe-area 와 무관하게 항상 18px** 이 된다.
+     즉 노치 기기가 비노치 기기와 똑같은 여백을 갖는다.
+     (`sa - 18px` 로 두면 여유가 정확히 0 이 되어 딱 붙는다 — 실측으로 확인했다)
+   비노치(safe=0)에서는 env() 가 0 이라 **현재와 완전히 동일**하다. `max()`/`calc()` 도 필요 없다.
+   새 important 0개. */
+@media (max-width: 1023px) {
+  html body { padding-bottom: env(safe-area-inset-bottom); }
+}
+
+/* 접근성 클립 유틸 — display:none 이 아니라 렌더 트리에 남긴다.
+   (카페24 옵션 검증 스크립트가 포커스·:visible 체크를 하는 요소용) */
+.zg-detail .zg-a11y-hide {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* -------------------------------------------------------- 2. K-02 갤러리 */
+/* ⚠ `.thumbnail__list > li` 의 display 는 절대 선언하지 않는다 (설계 규칙 3위). */
+.zg-detail .xans-product-detail .imgArea {
+  background: var(--zg-bg-2);
+  border-bottom: 1px solid var(--zg-hair);
+}
+/* R-10 갤러리 4장을 같은 크기로 (운영 지시 2026-09-09)
+   ⚠ 카페24는 **첫 슬라이드에만** `.thumbnail__item` 을 붙인다 (라이브 마크업 실측):
+       <li class="thumbnail__item swiper-slide"><img src="{$big_img}"></li>   ← 대표이미지
+       <li style="display:none" data-param="…"><img class="ThumbImage"></li>  ← 추가이미지 ×3
+     그래서 `.thumbnail__item` 으로 건 규칙이 **1장에만 걸렸다.**
+     실측(390px, 정사각 원본 1024²):
+       1장(대표) 304×304  ← `max-width:78%` 가 걸려 작다
+       2~4장     390×390  ← 우리 규칙이 안 걸려 스킨 기본값대로 꽉 찬다
+     대표이미지만 작게 나오던 것이 이 때문이다.
+   → 기준을 `.thumbnail__list > li` 로 옮겨 4장 모두 같은 규칙을 받게 한다.
+     `78%` 상한을 없애고 슬라이드 폭을 꽉 채운다(운영 결정). 세로는 화면 비율로 잠근다.
+   ⚠ `display` 는 여전히 선언하지 않는다. `object-fit: contain` 이라 어떤 비율이 와도
+      잘리지 않고, 가로가 긴 원본은 위아래 여백을 두고 가운데 정렬된다. */
+.zg-detail .xans-product-detail .imgArea .prdImg .thumbnail__list > li {
+  padding: 0;
+  box-sizing: border-box;
+  text-align: center;
+  background: var(--zg-bg-2);
+}
+.zg-detail .xans-product-detail .imgArea .prdImg .thumbnail__list > li img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  max-height: min(64vh, 440px);
+  object-fit: contain;
+  margin: 0 auto;
+}
+
+/* [K-02 AC4] 도트 위치 4속성은 스킨이 important 로 잠갔다(bottom:22px).
+   값을 이기는 대신 **기준 상자**를 옮긴다 — 도트의 컨테이닝 블록인 `.jsPrdThumbSlide` 에
+   padding-bottom:8px 을 주면 슬라이드 하단에서 22-8 = **14px** 이 된다. 새 important 0개. */
+.zg-detail .xans-product-detail .imgArea .prdImg .jsPrdThumbSlide { padding-bottom: 8px; }
+
+/* R-9 좌측 세로 썸네일 — 어떤 비율이 와도 통째로 보이게 (운영 지시 2026-09-09)
+   스킨: `.listImg{width:90px}` · `li{height:90px; overflow:hidden}`
+         `li img{max-width:100%; width:auto; height:auto}`
+   → 이미지의 **세로**를 제한하는 선언이 없다. 세로가 긴 원본(1024×1400 같은)이 오면
+     88px 폭에 맞춰 높이가 120px 로 계산되고 `overflow:hidden` 이 아래를 잘라낸다.
+     가로가 긴 원본(라이브 실측: 상품 34·91·93 이 1024×559)은 88×48 로 그려져
+     상자 위쪽에 붙고 아래 40px 이 빈다.
+   `object-fit: contain` 은 상자를 88×88 로 고정하고 그 안에 원본을 **전부** 담는다
+   (잘림 0, 확대 0, 세로 가운데 정렬). 13종 상품의 원본 비율이 제각각이라
+   비율에 의존하지 않는 이 방식이 복제에 안전하다.
+   ⚠ 스킨 규칙(0,5,1)보다 한 단계 높은 (0,6,1) 이다. 새 important 0개.
+   ⚠ 이 열은 ≥1024px 에서만 보인다(`@media (max-width:1023px){.listImg{display:none}}`). */
+.zg-detail .xans-product-detail .imgArea .listImg li img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* 도트 모양 */
+.zg-detail .thumb-slide-pager .swiper-pagination-bullet {
+  width: 6px; height: 6px;
+  margin: 0 3px;
+  opacity: 1;
+  background: var(--zg-hair-2);
+  transition: background var(--zg-t-mid);
+}
+.zg-detail .thumb-slide-pager .swiper-pagination-bullet-active {
+  width: 6px;
+  border-radius: 50%;
+  background: var(--zg-ink);
+  opacity: 1;
+}
+
+/* ------------------------------------------------------ 3. K-03 상품 헤드 */
+.zg-detail .xans-product-detail .headingArea { padding: 0 var(--zg-pad-x); }
+
+/* K-15 오늘 N명 (숫자는 스킨 JS 가 채운다 — 우리는 색·크기만) */
+.zg-detail .prd-view { font-size: 11.5px; }
+.zg-detail .prd-view .prd-view__point { color: var(--zg-acc-deep); font-weight: 600; }
+
+.zg-detail .xans-product-detail .headingArea h1.prd-name {
+  font-size: clamp(24px, 6.4vw, 30px);
+  font-weight: 700;
+  letter-spacing: -.025em;
+  line-height: 1.32;
+  color: var(--zg-ink);
+  margin: 0 0 8px;
+  word-break: keep-all;
+}
+.zg-detail .summary-info {
+  font-size: 14.5px;
+  font-weight: 400;
+  color: var(--zg-ink-2);
+  line-height: 1.62;
+  margin: 0 0 14px;
+  word-break: keep-all;
+}
+.zg-detail .summary-info strong { color: var(--zg-ink); font-weight: 600; }
+
+/* 평점 줄 — 숫자는 알파리뷰가 채운다. 우리는 배치·색만. 별 색은 스킨 노랑 수용. */
+.zg-detail .info-review-summary { padding: 0 0 10px; gap: 8px; }
+.zg-detail .info-review-summary__rate {
+  font-family: var(--zg-f-d);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--zg-ink);
+  font-variant-numeric: tabular-nums;
+}
+.zg-detail .info-review-summary__count {
+  font-size: 13.5px;
+  color: var(--zg-ink-2);
+  cursor: pointer;
+}
+
+/* 가격 줄 — 값은 전부 카페24 출력. 인라인 style 은 부모 span 에 걸려 있으므로
+   자식(#span_product_price_text / #span_product_price_custom)에 직접 선언하면 이긴다. */
+.zg-detail .price-spec { margin-top: 18px; margin-bottom: 22px; }
+.zg-detail .xans-product-detail .infoArea .price-spec #span_product_price_text {
+  font-family: var(--zg-f-d);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -.03em;
+  color: var(--zg-ink);
+  font-variant-numeric: tabular-nums;
+}
+/* [K-03 AC8] 기간할인 시 카페24가 `.price-spec` 에 `is-sale` 을 붙이고
+   `#span_product_price_text` 를 취소선 원가로, `#span_product_price_sale` 을 판매가로 바꾼다.
+   (크기 16px 은 스킨이 important 로 잠갔으므로 색·굵기만 맞추고, 판매가 슬롯을 28px 로 세운다) */
+.zg-detail .xans-product-detail .infoArea .price-spec.is-sale #span_product_price_text {
+  font-family: var(--zg-f-d);
+  font-weight: 500;
+  color: var(--zg-ink-3);
+}
+.zg-detail .xans-product-detail .infoArea .price-spec #span_product_price_sale {
+  font-family: var(--zg-f-d);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -.03em;
+  color: var(--zg-ink);
+  font-variant-numeric: tabular-nums;
+}
+.zg-detail .xans-product-detail .infoArea .price-spec.is-sale .prd_price_sale_css { width: 100%; }
+
+.zg-detail .xans-product-detail .infoArea .price-spec #span_product_price_custom {
+  font-family: var(--zg-f-d);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--zg-ink-3);
+  font-variant-numeric: tabular-nums;
+}
+/* 할인율 — `.discount-per` 는 스킨 JS 가 나중에 prepend 한다. 숫자를 쓰지 않는다. */
+.zg-detail .discount-per {
+  font-family: var(--zg-f-d);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--zg-acc-deep);
+  margin-right: 8px;
+}
+.zg-detail .discount-per::after { font-size: 12px; font-weight: 500; }
+
+/* 혜택 카드(.ds_benefit)는 `ds/css/price.css` 소관이다. 이 파일에는 규칙을 두지 않는다. */
+
+/* 브랜드 라인·뱃지 — 미확정 사양. 채울 데이터가 없으면(자식 0개) 통째로 숨긴다 */
+.zg-detail .zg-brand {
+  font-family: var(--zg-f-m);
+  font-size: 10.5px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--zg-acc-deep);
+  margin-bottom: 12px;
+}
+.zg-detail .zg-brand:empty { display: none; }
+.zg-detail .zg-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.zg-detail .zg-badges:empty { display: none; }
+.zg-detail .zg-badges__item {
+  font-size: 11.5px;
+  color: var(--zg-ink-2);
+  background: var(--zg-bg-2);
+  border: 1px solid var(--zg-hair);
+  border-radius: var(--zg-r-pill);
+  padding: 5px 11px;
+  word-break: keep-all;
+}
+
+/* ------------------------------------- 4. K-13 이벤트배너 / K-14 오늘출발 */
+/* ※ 아래 `.evt__*` 세 규칙은 R-8 로 `.evt` 를 내리면서 지금은 잠자는 규칙이다
+      (`.zg-detail .evt { display: none }` — 파일 뒤쪽 R-8 블록).
+      **지우지 마라.** 지우면 되살릴 때 스킨 기본값(높이 56px · 회색 `#f7f8fa`)으로
+      조용히 퇴화한다. 되살릴 때 다시 필요해 남겨 둔다. */
+.zg-detail .evt__item {
+  background: var(--zg-bg-2);
+  border: 1px solid var(--zg-hair);
+  border-radius: var(--zg-r-xl);
+  height: 54px;
+}
+.zg-detail .evt__txt { font-size: 13.5px; color: var(--zg-ink-2); font-weight: 500; }
+.zg-detail .evt__txt strong { color: var(--zg-ink); font-weight: 700; }
+
+.zg-detail .shipping-today {
+  background: var(--zg-bg-2);
+  border: 1px solid var(--zg-hair);
+  border-radius: var(--zg-r-xl);
+  padding: 13px 14px;
+  margin: 0 var(--zg-pad-x);
+  box-sizing: border-box;
+}
+/* `.jsNextShipping` 변형과 동률(0,2,0)이라 로드 순서에 의존했다 → 변형을 명시해 확정한다 */
+.zg-detail .shipping-today__title,
+.zg-detail .shipping-today__title.jsNextShipping { font-size: 13.5px; font-weight: 600; color: var(--zg-ink); }
+.zg-detail .shipping-today__time { font-size: 12.5px; color: var(--zg-ink-2); }
+.zg-detail .shipping-today__ac { color: var(--zg-acc-deep); font-weight: 600; }
+
+/* --------------------------------------------- 5. K-16 상품 상세정보 표 */
+.zg-detail .detail-spec { padding: 0 var(--zg-pad-x) 24px; }
+.zg-detail .xans-product-detail .infoArea .detail-spec table { width: 100%; }
+.zg-detail .xans-product-detail .infoArea .detail-spec th {
+  width: 32%;
+  padding: 9px 8px 9px 0;
+  vertical-align: top;
+  text-align: left;
+  border-top: 1px solid var(--zg-hair);
+}
+.zg-detail .xans-product-detail .infoArea .detail-spec td {
+  width: 68%;
+  padding: 9px 0;
+  font-size: 12.5px;
+  color: var(--zg-ink);
+  vertical-align: top;
+  word-break: keep-all;
+  border-top: 1px solid var(--zg-hair);
+}
+
+/* --------------------------------------------------- 6. K-04 구성 선택 */
+.zg-detail .productOption { margin: 0 0 4px; padding: 0 var(--zg-pad-x); }
+/* 옵션 표의 라벨 셀("수량선택") — 색·크기는 important-플래그 로 잠겨 있어 셀 자체를 접는다 */
+/* 스킨 `.xans-product-detail .infoArea table.xans-product-option td` 와 동률(0,3,2)이라
+   로드 순서에 의존했다 → 조상 2개를 더해 (0,5,2) 로 확정 승리시킨다. */
+.zg-detail .xans-product-detail .infoArea .productOption table.xans-product-option th { display: none; }
+.zg-detail .xans-product-detail .infoArea .productOption table.xans-product-option td { padding: 0; }
+
+.zg-detail .zg-opts {
+  display: grid;
+  gap: 9px;
+  margin: 0 0 6px;
+  padding: 0;
+  list-style: none;
+}
+.zg-detail .zg-opts__title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -.015em;
+  margin: 0 0 11px;
+}
+.zg-detail .zg-opt {
+  position: relative;
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  min-height: 56px;
+  padding: 15px;
+  box-sizing: border-box;
+  text-align: left;
+  background: var(--zg-bg);
+  border: 1px solid var(--zg-hair-2);
+  border-radius: var(--zg-r-xl);
+  color: var(--zg-ink);
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color var(--zg-t-fast), box-shadow var(--zg-t-fast), background var(--zg-t-fast);
+}
+.zg-detail .zg-opt:active { background: var(--zg-acc-soft); }
+.zg-detail .zg-opt[data-zg-on="1"] {
+  border-color: var(--zg-ink);
+  box-shadow: 0 0 0 1px var(--zg-ink) inset;
+}
+.zg-detail .zg-opt__tick {
+  width: 20px; height: 20px;
+  border: 1.5px solid var(--zg-hair-2);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+}
+.zg-detail .zg-opt[data-zg-on="1"] .zg-opt__tick {
+  border-color: var(--zg-ink);
+  background: var(--zg-ink);
+}
+.zg-detail .zg-opt__tick::after {
+  content: "";
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--zg-bg);
+  display: none;
+}
+.zg-detail .zg-opt[data-zg-on="1"] .zg-opt__tick::after { display: block; }
+
+.zg-detail .zg-opt__nm {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  line-height: 1.4;
+  word-break: keep-all;
+}
+.zg-detail .zg-opt__body { display: block; min-width: 0; }
+.zg-detail .zg-opt__mt {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--zg-ink-2);
+}
+.zg-detail .zg-opt__mt > em { font-style: normal; }
+.zg-detail .zg-opt__tag {
+  font-family: var(--zg-f-d);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--zg-acc-deep);
+}
+.zg-detail .zg-opt__free {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--zg-ok);
+}
+.zg-detail .zg-opt__add {
+  font-family: var(--zg-f-d);
+  font-size: 11.5px;
+  color: var(--zg-ink-3);
+  font-variant-numeric: tabular-nums;
+}
+.zg-detail .zg-opt__state {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--zg-ink);
+}
+.zg-detail .zg-opt__flag {
+  position: absolute;
+  top: -8px; right: 13px;
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  background: var(--zg-acc-deep);
+  border-radius: var(--zg-r-pill);
+  padding: 4px 9px;
+}
+.zg-detail .zg-opt-hint {
+  margin: 9px 0 0;
+  font-size: 12px;
+  color: var(--zg-ink-2);
+  word-break: keep-all;
+}
+/* (설계서에 없던 UI 「옵션을 직접 선택」은 검수 지시로 삭제했다 — 기획·디자인 어느 문서에도 없었다) */
+.zg-detail .xans-product-detail .infoArea .productOption select {
+  width: 100%;
+  height: 44px;
+  border: 1px solid var(--zg-hair-2);
+  border-radius: var(--zg-r-s);
+  font-size: 13px;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+/* 위 규칙(0,4,1)이 클립 유틸(0,2,0)을 이겨 **레이아웃 박스가 390px 그대로 남는다.**
+   `clip-path` 는 페인팅만 자르고 박스는 남기므로, 절대배치된 그 박스가 문서를 가로로 넘긴다
+   (실측 scrollWidth 425 / clientWidth 390). 구체도를 맞춰 박스 자체를 1px 로 만든다.
+   `display`·`visibility` 는 건드리지 않으므로 카페24 옵션 검증의 포커스 경로는 그대로다. */
+.zg-detail .xans-product-detail .infoArea .productOption select.zg-a11y-hide {
+  width: 1px;
+  height: 1px;
+  min-width: 0;
+}
+
+/* -------------------------------------------- 7. K-05 선택 목록 · 수량 */
+.zg-detail .zg-picked-head {
+  padding: 0 var(--zg-pad-x);
+  margin: 22px 0 8px;
+}
+.zg-detail .zg-picked-head__t { font-size: 16px; font-weight: 700; letter-spacing: -.015em; }
+.zg-detail .zg-picked-head__empty {
+  display: none;
+  margin-top: 8px;
+  padding: 15px;
+  font-size: 13px;
+  color: var(--zg-ink-2);
+  background: var(--zg-bg-2);
+  border: 1px dashed var(--zg-hair-2);
+  border-radius: var(--zg-r-xl);
+}
+/* [근거] `#totalProducts` 를 숨기면 `tr.add_product` 까지 함께 사라져
+   추가상품만 고른 고객이 자기가 담은 것을 보지도 지우지도 못했다.
+   → 행 은닉을 없애고 **안내문 토글**만 남긴다. 빈 상태 판정에는 add_product 도 포함한다(JS). */
+.zg-detail.zg-picked-0 .zg-picked-head__empty { display: block; }
+
+.zg-detail #totalProducts { margin: 0; padding: 0 var(--zg-pad-x); }
+/* 선택 행 카드 — 톤만 바꾼다.
+   ⚠ 실렌더로 확인한 승자는 무미디어 규칙
+   `#totalProducts > table tbody tr:not(#totalProductsOption)`(2,0,3) 의 `display:block; padding:20px` 이고,
+   `#totalProducts:not(.is-pc) table tbody tr`(1,1,3) 의 `display:flex; padding:16px` 은 **진다.**
+   어느 쪽이든 가격 칸이 행 padding 기준으로 절대배치되므로 결론은 같다
+   → **padding 은 데스크톱(.is-pc)에서만** 바꾼다. */
+.zg-detail #totalProducts > table tbody tr:not(#totalProductsOption) {
+  background: var(--zg-bg);
+  border-radius: 0;
+  border-top: 1px solid var(--zg-hair);
+}
+.zg-detail #totalProducts.is-pc > table tbody tr:not(#totalProductsOption) {
+  padding: 14px 0;
+}
+.zg-detail #totalProducts tbody td .product { font-size: 0; line-height: 1.5; }
+.zg-detail #totalProducts tbody td .product span {
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--zg-ink);
+  word-break: keep-all;
+}
+/* 추가구성상품 행은 **본품 행과 같은 흰 배경**이다. 구분은 「추가」 칩 하나로만 한다.
+   ⚠ 여기서 `padding` 을 바꾸지 않는다 — 모바일에서 가격 칸이 행 padding 기준으로
+   절대배치되기 때문이다(8차에 실측으로 확인). 배경·테두리 계열만 다룬다.
+   이전 판의 배경 톤(`--zg-bg-2`)과 좌측 레일(`inset 3px`)은 뺐다 — 다른 구성처럼 보였다. */
+.zg-detail #totalProducts > table tbody tr.add_product td .product::before {
+  content: "\CD94\AC00";   /* 추가 — CSS 유니코드 이스케이프. 인코딩 사고에도 안 깨진다 */
+  display: inline-block;
+  margin-right: 6px;
+  padding: 2px 7px;
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--zg-ink-2);
+  background: var(--zg-bg-2);
+  border: 1px solid var(--zg-hair);
+  border-radius: var(--zg-r-pill);
+  vertical-align: middle;
+}
+
+/* ── K-05 수량 스테퍼 ─────────────────────────────────────────────────────
+   [근거] 카페24는 `#totalProducts` 행을 **UA 로 갈라 두 마크업**으로 만든다
+   (`optimizer.php` : bIsMobile = EC_MOBILE || EC_MOBILE_DEVICE).
+
+     iPhone UA  → buildMobileSoldInCells : `.quantity` 래퍼 **없음**
+                  <p><input.quantity_opt> <a.up><img></a> <a.down><img></a></p>
+     데스크톱 UA → buildPcSoldInCells   : <span class="quantity"> 있음
+
+   이전 판은 `.quantity` 계열 7블록뿐이라 **모바일에서 한 곳도 걸리지 않았다.**
+   여기서는 두 구조를 각각 대응한다. ───────────────────────────────────── */
+
+/* (A) 모바일 행 — `p:not(.product)` 가 스테퍼 컨테이너다.
+   ⚠ 스킨은 같은 요소·자식에 `body:not(#userStyle) …`(ID 2개) 규칙을 섞어 쓴다
+      (예: `body:not(#userStyle) #totalProducts .eProductQuantityUpClass{position:absolute}` (2,1,0)).
+      우리도 같은 앞부분을 붙여 ID 개수를 맞춰야 이긴다.
+   ⚠ `margin` 은 3750행에서 `margin:0 important-플래그` 로 잠겨 있어 선언하지 않는다(죽은 코드 방지). */
+body:not(#userStyle) .zg-detail #totalProducts table p:not(.product) {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 134px;       /* td:first-child 가 flex 컨테이너다 — 늘어나지 않게 기본 크기를 못 박는다 */
+  width: 134px;          /* = 44 + 46 + 44. 실기에서 input 의 고유 폭(약 170px)이 박스를 263~268px 로 늘려
+                            절대배치된 가격 칸(80px, right 16px)을 61~66px 덮었다 */
+  min-width: 0;
+  padding: 0;
+  border: 1px solid var(--zg-hair-2);
+  border-radius: var(--zg-r-l);
+  overflow: hidden;
+  box-sizing: border-box;
+  vertical-align: middle;
+}
+body:not(#userStyle) .zg-detail #totalProducts table p:not(.product) .quantity_opt {
+  order: 2;
+  flex: 0 0 46px;        /* `1 1 auto` 는 input 고유 폭(약 170px)을 기본 크기로 삼는다 */
+  width: 46px;
+  min-width: 0;
+  height: var(--zg-tap);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--zg-bg);
+  font-family: var(--zg-f-d);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: var(--zg-tap);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: var(--zg-ink);
+  -webkit-appearance: none;
+  appearance: none;
+}
+/* `position:relative` 를 유지해야 ±글리프(a::before/.up::after)와 투명 클릭 이미지가
+   버튼 자신에 앵커된다. static 으로 두면 `p` 에 앵커되어 두 글리프가 겹친다. */
+body:not(#userStyle) .zg-detail #totalProducts table p:not(.product) a {
+  position: relative;
+  flex: 0 0 var(--zg-tap);
+  width: var(--zg-tap);
+  height: var(--zg-tap);
+  border: 0;
+  background: var(--zg-bg);
+}
+/* ⚠ 두 행 유형의 DOM 이 다르다 (카페24 옵션 스크립트 원문에서 복원):
+     tr.option_product : <a class="up eProductQuantityUpClass"><img class="option_box_up">
+     tr.add_product    : <a class="eAddProductQuantityUpClass"><img class="up …_up">
+   추가상품 행은 `.up/.down` 이 <a> 가 아니라 <img> 에 붙는다. `.up/.down` 으로 order 를 걸면
+   추가상품 행에서는 <a> 가 order 0 으로 남아 `+ − 1` 이 된다. → 두 행에 공통인 동작 클래스로 건다. */
+body:not(#userStyle) .zg-detail #totalProducts table p:not(.product) .down,
+body:not(#userStyle) .zg-detail #totalProducts table p:not(.product) .eProductQuantityDownClass,
+body:not(#userStyle) .zg-detail #totalProducts table p:not(.product) .eAddProductQuantityDownClass { order: 1; }
+body:not(#userStyle) .zg-detail #totalProducts table p:not(.product) .up,
+body:not(#userStyle) .zg-detail #totalProducts table p:not(.product) .eProductQuantityUpClass,
+body:not(#userStyle) .zg-detail #totalProducts table p:not(.product) .eAddProductQuantityUpClass { order: 3; }
+body:not(#userStyle) .zg-detail #totalProducts table p:not(.product) a::before {
+  left: 50%;
+  margin: -0.5px 0 0 -4.5px;
+  background: var(--zg-ink);
+}
+body:not(#userStyle) .zg-detail #totalProducts table p:not(.product) .up::after,
+body:not(#userStyle) .zg-detail #totalProducts table p:not(.product) .eProductQuantityUpClass::after,
+body:not(#userStyle) .zg-detail #totalProducts table p:not(.product) .eAddProductQuantityUpClass::after {
+  left: 50%;
+  margin: -4px 0 0 -0.5px;
+  background: var(--zg-ink);
+}
+
+/* 가격 칸 — 스킨이 행 기준 절대배치(`right:16px; bottom:16px; width:80px; line-height:30px`)한다.
+   스테퍼를 134px 로 고정했으니 겹치지는 않지만, 세로 중심이 스테퍼보다 11.5px 아래에 있고
+   `width:80px` 은 여섯 자리 금액(`104,000원`)이 꽉 찬다. 행 padding(20px)에 맞춰 오른쪽 정렬하고
+   스테퍼(44px)와 세로 중심을 맞춘다. 두 행 유형에만 건다 — 옵션 없는 상품의 서버 렌더 행은
+   `td:nth-child(3)` 이 가격 칸이라 구조가 달라 손대지 않는다. */
+.zg-detail #totalProducts:not(.is-pc) > table > tbody > tr.option_product > td.right,
+.zg-detail #totalProducts:not(.is-pc) > table > tbody > tr.add_product > td.right {
+  width: auto;           /* 글자 폭만큼만 — 320px 폭에서 80px 상자가 스테퍼와 6px 겹쳤다 */
+  min-width: 0;
+  right: 20px;
+  bottom: 20px;
+  line-height: var(--zg-tap);
+  white-space: nowrap;
+}
+
+/* 320px 급(iPhone SE 1세대·갤럭시 폴드 커버) — 행 안폭 208px 에 스테퍼 134 + 여섯 자리 가격(약 77px) 이
+   2.7px 모자란다. 버튼 44px(터치 타깃)은 지키고 숫자 칸만 36px 로 줄인다 (두 자리 수량까지 충분). */
+@media (max-width: 359px) {
+  body:not(#userStyle) .zg-detail #totalProducts table p:not(.product) {
+    flex-basis: 124px;
+    width: 124px;
+  }
+  body:not(#userStyle) .zg-detail #totalProducts table p:not(.product) .quantity_opt {
+    flex-basis: 36px;
+    width: 36px;
+  }
+}
+
+/* (B) 데스크톱 행 — `span.quantity`. `width:93px` 은 important 로 잠겨 있어
+   이기지 않고 `min-width` 로 우회한다(min-width 는 width 보다 우선한다).
+   스킨 셀렉터가 `body:not(#userStyle)`(ID 2개)이므로 우리도 같은 앞부분을 쓴다. */
+body:not(#userStyle) .zg-detail #totalProducts .quantity {
+  display: inline-flex;
+  align-items: center;
+  min-width: 134px;
+  padding: 0;
+  border: 1px solid var(--zg-hair-2);
+  border-radius: var(--zg-r-l);
+  overflow: hidden;
+  box-sizing: border-box;
+  vertical-align: middle;
+}
+body:not(#userStyle) .zg-detail #totalProducts .quantity input {
+  order: 2;
+  flex: 0 0 46px;        /* 모바일 행과 같은 이유 — input 고유 폭이 박스를 늘린다 */
+  width: 46px;
+  min-width: 0;
+  height: var(--zg-tap);
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--zg-bg);
+  font-family: var(--zg-f-d);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: var(--zg-tap);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: var(--zg-ink);
+}
+body:not(#userStyle) .zg-detail #totalProducts .quantity a {
+  position: relative;
+  flex: 0 0 var(--zg-tap);
+  width: var(--zg-tap);
+  height: var(--zg-tap);
+  border: 0;
+  background: var(--zg-bg);
+}
+body:not(#userStyle) .zg-detail #totalProducts .quantity .down { order: 1; }
+body:not(#userStyle) .zg-detail #totalProducts .quantity .up { order: 3; }
+body:not(#userStyle) .zg-detail #totalProducts .quantity a::before {
+  left: 50%;
+  margin: -0.5px 0 0 -4.5px;
+  background: var(--zg-ink);
+}
+body:not(#userStyle) .zg-detail #totalProducts .quantity .up::after {
+  left: 50%;
+  margin: -4px 0 0 -0.5px;
+  background: var(--zg-ink);
+}
+
+/* [근거] 삭제 컨트롤이 12×12px 이었다.
+   설계 규칙상 카드에는 삭제를 두지 않으므로 이것이 **유일한 취소 경로**다.
+   스킨 `body:not(#userStyle) #totalProducts .delete`(2,1,0) 를 같은 앞부분 + `.zg-detail`(2,2,0) 로 이긴다. */
+body:not(#userStyle) .zg-detail #totalProducts .delete {
+  width: var(--zg-tap);
+  height: var(--zg-tap);
+  margin: 0;
+  background-position: center center;
+  background-size: 13px 13px;
+}
+body:not(#userStyle) .zg-detail #totalProducts .delete img {
+  width: 100%;
+  height: 100%;
+}
+
+/* 행 우측 금액 · 삭제 버튼 (두 구조 공통) */
+.zg-detail #totalProducts table td.right strong.price {
+  font-family: var(--zg-f-d);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--zg-ink);
+  font-variant-numeric: tabular-nums;
+}
+.zg-detail #totalProducts table td.right .ec-front-product-item-price {
+  font-family: var(--zg-f-d);
+  font-variant-numeric: tabular-nums;
+}
+
+/* [9종 복제 대비] 옵션 없이 add_option 만 있는 상품은 `p.product` 에 `<span>` 이 없어
+   스킨의 `font-size:0` 설계 때문에 행 텍스트가 통째로 사라진다.
+   detail-ui.js 가 그런 행에 data-zg-nospan="1" 을 붙이고, 여기서 글자를 되살린다. */
+.zg-detail #totalProducts tr[data-zg-nospan="1"] td .product {
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+.zg-detail #totalProducts tr[data-zg-nospan="1"] td .product br { display: none; }
+
+/* ------------------------------------------------ 8. K-06 추가 구성 상품 */
+.zg-detail .xans-product-detail .productSet { margin: 22px var(--zg-pad-x) 0; }
+.zg-detail .xans-product-detail .productSet > .title {
+  padding: 14px 16px;
+  border: 1px solid var(--zg-hair);
+  border-radius: var(--zg-r-xl);
+  background: var(--zg-bg-2);
+}
+.zg-detail .xans-product-detail .productSet.on > .title {
+  border-bottom: 1px solid var(--zg-hair);
+  border-bottom-left-radius: var(--zg-r-xl);
+  border-bottom-right-radius: var(--zg-r-xl);
+  background: var(--zg-bg-2);
+}
+.zg-detail .xans-product-detail .productSet > .title h3 {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -.015em;
+  color: var(--zg-ink);
+}
+.zg-detail .xans-product-detail .productSet > .title h3 span {
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--zg-ink-2);
+}
+.zg-detail .xans-product-detail .productSet .product > li {
+  margin: 9px 0 0;
+  padding: 12px 14px;
+  border: 1px solid var(--zg-hair);
+  border-radius: var(--zg-r-xl);
+  box-sizing: border-box;
+}
+.zg-detail .xans-product-detail .productSet .product > li[data-zg-picked="1"] { border-color: var(--zg-ink); }
+.zg-detail .xans-product-detail .productSet .thumbnail {
+  width: 54px; height: 54px;
+  border-radius: var(--zg-r-m);
+  background: var(--zg-bg-2);
+  overflow: hidden;
+  flex: 0 0 54px;
+}
+.zg-detail .xans-product-detail .productSet .thumbnail img { max-height: 82%; max-width: 70%; width: auto; height: auto; }
+.zg-detail .xans-product-detail .productSet .information .name {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  color: var(--zg-ink);
+  word-break: keep-all;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.zg-detail .xans-product-detail .productSet .information .salePrice {
+  font-family: var(--zg-f-d);
+  font-size: 14.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--zg-ink);
+}
+/* 할인판매가가 없으면 카페24는 `.salePrice` 를 displaynone 으로 두고 `.price` 만 보여준다.
+   product_no=11 라이브가 그 경우다 → 두 슬롯 모두 같은 위계로 스타일링한다. */
+.zg-detail .xans-product-detail .productSet .information .price {
+  font-family: var(--zg-f-d);
+  font-size: 14.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--zg-ink);
+}
+.zg-detail .xans-product-detail .productSet .information .price .del {
+  font-size: 11px;
+  color: var(--zg-ink-3);
+  text-decoration: line-through;
+}
+.zg-detail .xans-product-detail .infoArea .productSet select {
+  width: 100%;
+  height: 40px;
+  border: 1px solid var(--zg-hair-2);
+  border-radius: var(--zg-r-s);
+  font-size: 13px;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+/* ------------------------------------------- 9. K-07 무료배송 진행바 (CSS만) */
+/* 값·표시/숨김은 전부 moa/js/product/detail.js 가 한다. 우리는 껍데기만. */
+.zg-detail #freeShipGuide {
+  margin: 22px var(--zg-pad-x) 0;
+  padding: 15px 16px;
+  background: var(--zg-bg-2);
+  border: 1px solid var(--zg-hair);
+  border-bottom: 1px solid var(--zg-hair);
+  border-radius: var(--zg-r-xl);
+  box-sizing: border-box;
+}
+.zg-detail #freeShipGuide [class^='text'] {
+  height: auto;
+  line-height: 1.5;
+  text-align: left;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--zg-ink);
+  word-break: keep-all;
+}
+.zg-detail #freeShipGuide [class^='text'] strong {
+  font-size: 13.5px;
+  font-weight: 700;
+  font-style: normal;
+  color: var(--zg-acc-deep);
+}
+.zg-detail #freeShipGuide .text2 { color: var(--zg-ok); }
+.zg-detail #freeShipGuide .text2 strong { color: var(--zg-ok); }
+.zg-detail #freeShipGuide .levelMeter { height: auto; margin-top: 11px; }
+.zg-detail #freeShipGuide .levelMeter .levelLine {
+  height: 6px;
+  border-radius: var(--zg-r-pill);
+  background: var(--zg-hair);
+  overflow: hidden;
+}
+.zg-detail #freeShipGuide .levelMeter .minValue,
+.zg-detail #freeShipGuide .levelMeter .maxValue { display: none; }
+.zg-detail #levelLineActive {
+  height: 100%;
+  border-radius: var(--zg-r-pill);
+  background: var(--zg-acc);
+  transition: width var(--zg-t-slow);
+}
+.zg-detail #levelLineActive.full { background: var(--zg-ok); }
+
+/* -------------------------------------------------- 10. K-08 합계 3줄 */
+/* 원본 #totalPrice 는 삭제하지 않고 시각적으로만 클립한다 (MutationObserver 유지) */
+.zg-detail .infoArea-footer #totalPrice {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.zg-detail .zg-sum {
+  margin: 24px var(--zg-pad-x) 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--zg-ink);
+}
+/* R-17 (2026-09-11) `[hidden]` 이 먹히게 한다 — **이 줄이 없으면 숨기라는 지시가 무시된다.**
+   브라우저 기본값은 `[hidden]{display:none}`(0,1,0) 인데 바로 아래 규칙이 (0,2,0) 이라
+   이겨 버린다. 그래서 `row.hidden = true` 를 걸어도 줄이 그대로 보였고,
+   구성을 골랐다 취소하면 **정가 196,000 · 할인 −68,000 이 남아 있었다**
+   (상품 금액은 「—」, 총 결제금액은 0원인데). 실기기 지적 2026-09-11.
+   ⚠ 이 규칙을 지우면 그 증상이 그대로 돌아온다. */
+.zg-detail .zg-sum__row[hidden] { display: none; }
+
+.zg-detail .zg-sum__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 7px 0;
+  font-size: 14px;
+}
+.zg-detail .zg-sum__row > span:first-child { color: var(--zg-ink-2); }
+.zg-detail .zg-sum__v {
+  font-family: var(--zg-f-d);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--zg-ink);
+}
+.zg-detail .zg-sum__v--free { color: var(--zg-ok); font-weight: 700; }
+
+/* 정가 · 할인금액 (2026-09-11) — 얼마나 아꼈는지 보이게 한다.
+   정가는 취소선으로 낮춰 두고, 할인금액만 강조색으로 올린다.
+   ⚠ 두 줄은 정확히 계산될 때만 JS 가 `hidden` 을 푼다. 없는 할인을 만들지 않는다. */
+.zg-detail .zg-sum__row--list .zg-sum__v {
+  font-weight: 500;
+  color: var(--zg-ink-3);
+  text-decoration: line-through;
+}
+.zg-detail .zg-sum__row--save > span:first-child { color: var(--zg-acc-deep); font-weight: 600; }
+.zg-detail .zg-sum__row--save .zg-sum__v { color: var(--zg-acc-deep); font-weight: 700; }
+.zg-detail .zg-sum__row--tot {
+  margin-top: 9px;
+  padding-top: 15px;
+  border-top: 1px solid var(--zg-hair);
+}
+.zg-detail .zg-sum__row--tot > span:first-child {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--zg-ink);
+}
+.zg-detail .zg-sum__row--tot .zg-sum__v {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -.03em;
+}
+.zg-detail .zg-sum__note {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--zg-ink-3);
+  word-break: keep-all;
+}
+.zg-detail .infoArea-footer .ec-base-help.EC-price-warning {
+  font-size: 11.5px;
+  color: var(--zg-ink-note);
+  line-height: 1.8;
+}
+
+/* -------------------------------- 11. K-12a 인라인 구매 버튼 (레이어 안) */
+.zg-detail .infoArea-footer .productAction {
+  padding: 0 var(--zg-pad-x);
+  /* R-13 (2026-09-11 실측) 이 상자는 `left:0; right:0` 로 폭이 정해지는데 기본이
+     content-box 라 좌우 패딩 40px 이 **폭에 더해졌다** — 390px 화면에서 상자가 430px.
+     그만큼 버튼 두 개가 통째로 오른쪽으로 밀려 「구매하기」가 화면 밖으로 4px 나갔다.
+     (실측 390px: 왼쪽 여백 36px · 오른쪽 −4px → 고친 뒤 20px/20px 대칭) */
+  box-sizing: border-box;
+  /* 라이브는 `#totalPrice { padding: 20px 0 30px }`(≤1024px 미디어) 의 아래 30px 으로
+     합계와 버튼 사이를 띄워 두었는데, 우리는 `#totalPrice` 를 시각적으로 접어(K-08)
+     그 여백까지 없앴다 → 같은 30px 을 여기서 되돌린다.
+     ※ 13차 이전에는 37px 이었다. 그 7px 을 「말풍선 머리 공간」이라고 적어 두었으나
+        **사실이 아니다.** 12차 B안 레이아웃에서 ≤1023px 은 두 상태뿐이고 둘 다 이 값을 안 쓴다:
+          · 시트 닫힘 : `#fixedActionButton` 이 `display:none`(이 파일 ≤1023 미디어) → 상자가 안 그려진다
+          · 시트 열림 : 스킨 `.mobile-layer.fixed .productAction{position:absolute;bottom:0}`
+                       (번들 원문 실측) → 위치를 `bottom` 이 정하므로 `margin-top` 이 무효다
+        값이 실제로 렌더에 반영되는 곳은 **≥1024px 뿐**이다(QA 실측: 1280px 에서 −7px 이동).
+        즉 30px 으로 내린 것은 데스크탑 간격을 라이브 원값에 맞춘 것이고,
+        ≤1023px 에서는 37px 이든 30px 이든 화면이 같다. */
+  margin-top: 30px;
+}
+.zg-detail .productAction .buy-btn-wrap { gap: 9px; }
+
+/* R-8 카카오 혜택 배너 비노출 (운영 결정 2026-09-09) ------------------------
+   배송 안내는 관리자 값(`#freeShipGuide[data-delivery]`) 한 곳에서만 표시한다.
+   그래서 상세페이지의 배너 슬롯 2곳을 화면에서 내린다 — 말풍선(`.benefit-bubble`)과
+   가격 아래 띠(`.evt`).
+   ⚠ DOM 은 그대로 둔다. 두 노드 모두 카페24 배너앱이 배너를 끼워 넣는 자리다.
+      노드를 지우면 앱이 그 자리를 건너뛰어 그 배너를 영영 못 쓴다. **감추기만 한다.**
+   ⚠ 스킨 번들은 `.benefit-bubble > a` 만 스타일링하고 `.benefit-bubble` 자신에는
+      손대지 않는다(번들 원본 실측). 배너앱이 넣는 인라인 `style` 도 `<a>` 에만 붙는다
+      → 부모 노드를 내리면 자식의 인라인 style 로도 되살아나지 못한다. `!important` 불필요.
+   ⚠ 캐스케이드가 안전한 이유는 **순서가 아니라 경쟁자가 없기 때문**이다.
+      라이브 번들 실측: 이 파일은 번들 오프셋 **1**, 스킨의 `.benefit-bubble` 규칙은 **84,704** —
+      즉 우리가 **먼저** 오고 스킨이 나중이다. 동일 특정도면 스킨이 이긴다.
+      지금 이 두 줄이 먹히지 않는 것은 스킨이 `display` 를 아예 선언하지 않았기 때문이다.
+      스킨에 `display` 선언이 생기면 이 규칙은 조용히 진다. → 그때는 특정도를 올려서 막는다.
+   ↩ 되살리기 — **한 줄 지우는 것으로는 끝나지 않는다.**
+      말풍선 줄을 지우면 ≤1023 시트 열림 상태(말풍선이 보이는 유일한 상태)에서
+      말풍선과 안내문(`.zg-sum__note`)이 **겹친다**. QA 실측(320–1023px):
+        · `.productAction` 이 30px 일 때도, 37px 로 되돌려도 간격은 **−85.9 ∼ −116.9px(=겹침)**
+        · 37px 로 되돌릴 때 간격이 움직이는 폭은 **0.0–0.2px** (위 `margin-top` 주석의 이유)
+      즉 `margin-top` 을 어떻게 두든 겹침은 남는다. 되살리려면 진짜 수정이 필요하다 —
+      ≤1023 시트 열림에서 `.zg-sum__note` 를 감추거나, 말풍선 위치 자체를 옮겨야 한다. */
+.zg-detail .benefit-bubble { display: none; }
+.zg-detail .evt { display: none; }
+
+/* 혜택 말풍선(`.benefit-bubble > a`)은 스킨이 `height:26px` 만 주고 `line-height` 를 안 준다.
+   그래서 바로 위 버튼 규칙의 `line-height: var(--zg-bar-h)`(54px)를 **상속**해
+   26px 상자 안에 54px 줄상자가 들어가고, 글자가 상자 아래로 8px 내려앉아 잘려 보였다.
+   상속만 끊는다 — 스킨 규칙도 배너앱 산출물(`{#title}`·`style="{#html}"`)도 건드리지 않는다.
+   ※ R-8 로 말풍선을 껐으니 지금은 잠자는 규칙이다. 되살릴 때 다시 필요해 남겨 둔다. */
+.zg-detail .benefit-bubble > a { line-height: 1.2; }
+.zg-detail .productAction [class^='btn'].sizeL.actionCart {
+  height: var(--zg-bar-h);
+  line-height: var(--zg-bar-h);
+  background: var(--zg-bg);
+  color: var(--zg-ink);
+  border: 1px solid var(--zg-ink);
+  border-radius: var(--zg-r-xl);
+  font-family: var(--zg-f-b);
+  font-size: 15px;
+  font-weight: 700;
+}
+.zg-detail .productAction [class^='btn'].sizeL.gFull {
+  height: var(--zg-bar-h);
+  line-height: var(--zg-bar-h);
+  background: var(--zg-ink);
+  color: #fff;
+  border: 1px solid var(--zg-ink);
+  border-radius: var(--zg-r-xl);
+  font-family: var(--zg-f-b);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* 품절 대체 버튼은 검정 CTA 톤을 쓰지 않는다 */
+.zg-detail .productAction .soldout [class^='btn'].sizeL.gFull {
+  background: var(--zg-hair);
+  color: var(--zg-ink-3);
+  border-color: var(--zg-hair);
+}
+
+/* -------------------------------------------- 12. K-09 상세 접기·펼치기 */
+.zg-detail .zg-dh { text-align: center; padding: 34px 0 6px; }
+.zg-detail .zg-lab {
+  display: block;
+  margin-bottom: 10px;
+  font-family: var(--zg-f-m);
+  font-size: 10.5px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--zg-ink-3);
+}
+.zg-detail .zg-dh h2 { font-size: 20px; font-weight: 700; letter-spacing: -.02em; margin: 0; }
+
+/* 2026-09-11 개편 — 상세는 기본값으로 모두 펼친다. 클램프 없음.
+   `.zg-open` 은 마크업에 고정으로 붙어 있고, 예전 판이 캐시된 경우에도
+   접히지 않도록 `.zg-fold` 자체에서 클램프를 뺀다. */
+.zg-detail .zg-fold { position: relative; max-height: none; overflow: visible; }
+/* `.zg-veil` / `.zg-more` 규칙 — 접기 폐지(2026-09-11)로 함께 제거 */
+
+.zg-detail #prdDetail .zg-fold img { display: block; margin: 0 auto; }
+
+/* [근거] `ds/js/detail-ui.js` 의 K-09 하드가드가 `ec-data-src` 를 `src` 로 승격하면서 `width`/`height` 가 없어
+   **로드 전 높이가 0** 이 된다 → 브라우저가 14장을 전부 "뷰포트 근처"로 판정해 한꺼번에 받는다.
+   그 하드가드(색인 보전)는 되돌리지 않고, **로드 전에도 자리를 차지하게** 만들어 `loading="lazy"` 를 살린다.
+   `aspect-ratio: auto <ratio>` 의 `auto` 키워드가 핵심이다 —
+     · 로드 전(자연 치수 없음) : 아래 비율로 자리를 잡는다
+     · 로드 후(자연 치수 있음) : **자연 비율이 우선**이라 왜곡이 없다
+   비율 640/948 은 상품 상세 이미지 원본의 실측 중앙값이다
+   (라이브 6개 상품 101장의 PNG IHDR 을 읽어 확인 — 폭은 전부 639~640px).
+   ⚠ 실측에서 확인한 함정: 스킨 `.productDetail img{width:auto important-플래그}` 때문에
+     로드 전 **폭이 0px** 으로 계산돼 `aspect-ratio` 만으로는 높이가 0 이다(전 장이 한 점에 겹쳐
+     전부 "뷰포트 안"이 된다). 폭은 important 로 잠겨 이길 수 없으므로,
+     **잠기지 않은 `min-width`/`min-height` 로 최소 크기를 만든다.** */
+.zg-detail #prdDetail .zg-fold img { aspect-ratio: auto 640 / 948; }
+
+/* 로드 전 자리 확보 — 확대 없이.
+   ⚠ 원본 폭은 **639~640px** 이다(라이브 6개 상품 101장 IHDR 실측).
+     `min-width:100%` 로 두면 641~1023px 구간에서 원본이 최대 +55% 확대돼 흐려진다
+     (768px +20% · 900px +36% · 1023px +55% — 실렌더 측정).
+     아이패드 세로·큰 폰 가로가 전부 이 구간이라 390px 검수로는 드러나지 않는다.
+     → **상한을 원본 폭으로 잠근다.** 640px 보다 넓은 원본이 와도 확대하지 않는다.
+   ≥1024px : 컨테이너가 더 넓을 수 있어 폭은 건드리지 않고 최소 높이만 예약한다
+             (원본 최소 렌더 높이보다 낮은 값이라 왜곡이 없다). */
+@media (max-width: 1023px) {
+  .zg-detail #prdDetail .zg-fold img { min-width: min(100%, 640px); }
+}
+@media (min-width: 1024px) {
+  .zg-detail #prdDetail .zg-fold img { min-height: 320px; }
+}
+
+/* --------------------------------------------- 13. K-10 바로가기 칩 3개 */
+.zg-detail .zg-guide {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 26px auto 0;
+  padding: 0 var(--zg-pad-x);
+  max-width: var(--zg-w-max);
+  box-sizing: border-box;
+}
+.zg-detail .zg-chip {
+  flex: 1 1 auto;
+  min-height: 44px;
+  padding: 12px 14px;
+  background: var(--zg-bg-2);
+  border: 1px solid var(--zg-hair);
+  border-radius: var(--zg-r-pill);
+  font-family: var(--zg-f-b);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--zg-ink);
+  cursor: pointer;
+  word-break: keep-all;
+}
+
+/* ------------------------------------------------------ 14. K-11 각주 */
+.zg-detail .zg-note {
+  max-width: var(--zg-w-max);
+  margin: 16px auto 34px;
+  padding: 0 var(--zg-pad-x);
+  box-sizing: border-box;
+  font-size: 11.5px;
+  line-height: 1.8;
+  color: var(--zg-ink-note);
+  word-break: keep-all;
+}
+.zg-detail .zg-note span { display: block; }
+
+/* --------------------------------------------- 15. K-17 스티키 탭바 */
+.zg-detail .detail-tab__nav.fixed { background: var(--zg-bg); border-bottom: 1px solid var(--zg-hair); }
+.zg-detail .detail-tab__item {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--zg-ink-3);
+}
+/* 활성 탭은 스킨 `.detail-tab__item.on` 과 동률이라 순서에 의존했다 → 우리 규칙에서 명시한다 */
+.zg-detail .detail-tab__item.on,
+.zg-detail .detail-tab__item.selected {
+  color: var(--zg-ink);
+  font-weight: 700;
+  box-shadow: inset 0 -2px 0 0 var(--zg-ink);
+}
+
+/* --------------------------------------- 16. K-12b 하단 고정바 (≤1023) */
+@media (max-width: 1023px) {
+  /* [근거] 명세 높이 82px = 금액줄 28px + 버튼 54px.
+     실측 92px 의 원인 2가지를 여기서 없앤다.
+       ① `gap:9px` 은 `flex-wrap:wrap` 컨테이너에서 **row-gap 으로도** 작동해
+          금액줄과 버튼줄 사이에 9px 을 넣었다 → `column-gap` 만 남기고 `row-gap:0`.
+       ② `border-top:1px` 이 보더박스 높이에 더해졌다 → 같은 1px 선을
+          높이를 차지하지 않는 `box-shadow: 0 -1px 0` 으로 바꾼다.
+     결과 28 + 54 = **82px** (+ safe-area). 이 값이 실측 항목 상수의 전제다. */
+  .zg-detail .mobile-fix-footer {
+    z-index: var(--zg-z-bar);
+    column-gap: 9px;
+    row-gap: 0;
+    padding: 0 var(--zg-pad-x);
+    padding-bottom: env(safe-area-inset-bottom);
+    background: rgba(255, 255, 255, .96);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-top: 0;
+    box-shadow: 0 -1px 0 0 var(--zg-hair);
+    box-sizing: border-box;
+  }
+  .zg-detail .mobile-fix-footer .zg-bar__sum {
+    flex: 0 0 100%;
+    order: -1;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    height: 28px;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  .zg-detail .mobile-fix-footer .zg-bar__sum > span:first-child {
+    font-size: 10.5px;
+    letter-spacing: .02em;
+    color: var(--zg-ink-3);
+  }
+  .zg-detail .mobile-fix-footer .zg-bar__v {
+    font-family: var(--zg-f-d);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -.03em;
+    line-height: 28px;
+    color: var(--zg-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .zg-detail .mobile-fix-footer .zg-bar__v.zg-bar__v--hint {
+    font-family: var(--zg-f-b);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--zg-ink-2);
+    letter-spacing: -.01em;
+  }
+  .zg-detail .mobile-fix-footer [class^='btn'].btnNormal {
+    flex: 1 1 0;
+    height: var(--zg-bar-h);
+    line-height: var(--zg-bar-h);
+    background: var(--zg-bg);
+    color: var(--zg-ink);
+    border: 1px solid var(--zg-ink);
+    border-radius: var(--zg-r-xl);
+    font-family: var(--zg-f-b);
+    font-size: 15px;
+    font-weight: 700;
+    box-sizing: border-box;
+  }
+  .zg-detail .mobile-fix-footer [class^='btn'].btnNormal.jsGoReview {
+    flex: 0 0 56px;
+    width: 56px;
+    line-height: 1;
+    border: 1px solid var(--zg-hair-2);
+    color: var(--zg-ink-3);
+  }
+  .zg-detail .mobile-fix-footer [class^='btn'].btnNormal.jsGoReview::after { display: none; }
+  .zg-detail .mobile-fix-footer .review-count { font-size: 10.5px; color: var(--zg-ink-3); }
+  .zg-detail .mobile-fix-footer [class^='btn'].btnSubmit {
+    flex: 1.4 1 0;
+    height: var(--zg-bar-h);
+    line-height: var(--zg-bar-h);
+    background: var(--zg-ink);
+    color: #fff;
+    border: 1px solid var(--zg-ink);
+    border-radius: var(--zg-r-xl);
+    font-family: var(--zg-f-b);
+    font-size: 15px;
+    font-weight: 700;
+    box-sizing: border-box;
+  }
+  /* R-11 시트를 열면 「총 구매 금액」이 구매 버튼에 가려 안 보였다 (실측 재현 2026-09-09)
+     스킨 구조(실측): 시트가 열리면
+       `.mobile-layer.fixed.on`   position:fixed
+       └ `.mobile-layer__inner`   overflow-y:auto · padding-bottom:70px   ← 스크롤 통
+          └ `.infoArea-footer` ├ `.zg-sum`            (흐름 안 — 통과 함께 스크롤된다)
+                               └ `#fixedActionButton` position:absolute · bottom:0
+                                  기준상자는 `.mobile-layer` → **스크롤을 안 하고 바닥에 붙어 있다**
+     구성 카드가 통을 가득 채우므로 시트를 연 순간 합계는 통 바닥에 있고,
+     그 자리를 버튼 블록(86px = 54 버튼 + 30 우리 margin + 2 테두리)이 덮는다.
+     실측 390px: 「총 구매 금액」 줄(778.8~846) ↔ 버튼(774~828) **49.2px 겹침**(8,585 px²).
+     320px 25.4px · 414/768px 49.2px. 스크롤하면 드러나지만, **결제 직전에 제일 중요한 숫자를
+     스크롤해야 볼 수 있는 것 자체가 결함**이다.
+     → 합계를 버튼 블록 바로 위에 **같이 고정**한다. 항상 보이고 절대 안 가린다.
+       데스크톱(≥1024)에서 이미 쓰던 방식과 같다.
+     ⚠ `.on` 으로 한정한다 — 시트가 닫혀 있을 때는 합계가 본문 흐름에 그대로 있어야 한다.
+     ⚠ 기준상자가 버튼과 같은 `.mobile-layer` 라 `bottom` 값으로 버튼 위에 정확히 얹힌다. */
+  .zg-detail .mobile-layer.fixed.on .infoArea-footer .zg-sum {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: var(--zg-act-h, 86px);   /* 실측값 주입 — 아래 R-12 주석 */
+    margin: 0;
+    padding: 9px var(--zg-pad-x) 0;
+    box-sizing: border-box;
+    background: var(--zg-bg);
+    border-top: 1px solid var(--zg-ink);
+  }
+  .zg-detail .mobile-layer.fixed.on .infoArea-footer .zg-sum .zg-sum__row { padding: 3px 0; font-size: 13px; }
+  .zg-detail .mobile-layer.fixed.on .infoArea-footer .zg-sum .zg-sum__row--tot { margin-top: 4px; padding-top: 8px; }
+  .zg-detail .mobile-layer.fixed.on .infoArea-footer .zg-sum .zg-sum__row--tot .zg-sum__v { font-size: 21px; }
+  /* 안내 각주는 고정 줄에서 뺀다 — 같은 문장이 시트를 닫으면 본문에 그대로 있다 */
+  .zg-detail .mobile-layer.fixed.on .infoArea-footer .zg-sum .zg-sum__note { display: none; }
+  /* 스크롤 통 바닥을 「버튼 블록 + 고정된 합계」 만큼 비운다 — 마지막 구성 카드가 안 깔리게.
+     값은 아래 실측으로 확정한다(임시값이 아니라 측정치다). */
+  /* R-12 (2026-09-11 실측) 86·204 는 「구매 버튼 블록 = 86px」 을 전제로 굳힌 값이었다.
+     그 전제가 두 번 깨진다:
+       ① 합계가 3줄 → 5줄(정가·할인금액 추가)로 늘었다.
+       ② 카페24 간편결제 앱이 **런타임에** 간편결제 버튼 상자(`#appPaymentButtonBox` 등)를
+          `.productAction` 안에 append 한다. 마크업에 없으니 템플릿에서 지워도 다시 생긴다.
+          → `.productAction` 이 86px 이 아니게 되고, 고정된 합계가 그 밑에 깔려 잘린다.
+     ⚠ 실렌더 하네스는 이걸 못 봤다 — 미러에서 jQuery 가 안 붙어 앱 주입이 아예 안 돌았다.
+     → 값을 굳히지 않는다. `detail-ui.js` 의 `fitSheet()` 가 `.productAction` 실측 높이를
+       `--zg-act-h` 로, 「버튼블록+합계」 를 `--zg-tub-pb` 로 넣는다. 아래는 그 폴백값이다. */
+  .zg-detail .mobile-layer.fixed.on .mobile-layer__inner { padding-bottom: var(--zg-tub-pb, 204px); }
+  /* R-13 시트를 연 채 스와이프하면 **뒤 상세페이지가 같이 밀렸다**
+     (실측 390px: 딤 위에서 스와이프 → 본문 800px 이동. 통이 끝까지 내려가면
+      그 뒤부터도 본문으로 넘어갔다.) 그 스와이프가 탭을 삼켜
+     「딤을 눌러도 안 닫힌다」로도 보였다.
+
+     ⚠ 본문을 `position:fixed` 로 잠그는 방법은 쓰지 않는다 — 잠그는 순간
+       `scrollY` 가 0 이 되어 스킨 `checkScroll` 의 `.fixed` 경계 판정이 흔들리고,
+       경계 직전(−3px)에서 시트가 아예 안 열렸다 (회귀 F3 3건으로 잡혔다).
+     → 손가락을 받는 쪽에서 끊는다. 본문 스크롤 위치는 건드리지 않는다.
+        · 딤·시트 뼈대  : `touch-action: none`  — 끌어도 아무 일이 없다
+        · 스크롤 통     : `pan-y` 로 되돌리고 `overscroll-behavior: contain` 으로 연쇄 차단 */
+  .zg-detail .mobile-layer.fixed.on,
+  .mobile-layer-bg.on { touch-action: none; }
+  .zg-detail .mobile-layer.fixed.on .mobile-layer__inner {
+    touch-action: pan-y;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  /* 통 안에 있지만 `position:absolute` 로 **바닥에 고정된** 두 블록(고정 합계·버튼)은
+     통과 함께 스크롤되지 않아 브라우저가 통을 스크롤 대상에서 빼 버린다 —
+     그 위에서 끌면 손가락이 곧장 본문으로 간다(실측: 그 자리에서만 본문 1200→1417).
+     통에서 물려받은 `pan-y` 를 여기서 끊는다. 탭·클릭은 영향 없다. */
+  .zg-detail .mobile-layer.fixed.on .infoArea-footer .zg-sum,
+  .zg-detail .mobile-layer.fixed.on .infoArea-footer .zg-sum *,
+  .zg-detail .mobile-layer.fixed.on .infoArea-footer .productAction,
+  .zg-detail .mobile-layer.fixed.on .infoArea-footer .productAction * { touch-action: none; }
+
+  /* 하단 고정바에 같은 「장바구니·구매하기」가 있어 합계 아래 인라인 버튼이 중복이었다.
+     → **바텀시트가 닫혀 있을 때만** 인라인 블록을 감춘다. 시트를 열면 그 안에 다시 나타나
+     구매 경로가 유지된다(`.mobile-layer.on` 은 스킨 `mobileLayerOn()` 이 붙이는 클래스다).
+     ⚠ DOM 은 그대로다 — `onclick="product_submit(…)"` 두 개 모두 살아 있다.
+     ⚠ `.app-pay-wrap`(네이버·카카오페이)은 `#fixedActionButton` 의 **형제**라 함께 숨지 않는다.
+     ⚠ 말풍선은 13차(R-8)에서 아예 껐다 — 시트를 열어도 나오지 않는다. */
+  .zg-detail .mobile-layer:not(.on) .infoArea-footer #fixedActionButton { display: none; }
+
+  /* 하단 고정바의 리뷰 칩 — **감춘다. 지우지 않는다.**
+     이 안에 알파리뷰 카운트 훅(리뷰수 클래스)이 있어 DOM 에서 빼면 알파리뷰가 끊긴다.
+     ⚠ 주석에 그 클래스명을 그대로 쓰지 않는다 — 보존 훅 개수 검사가 주석까지 세어 오탐이 난다.
+     감추기만 하면 위젯은 그대로 돌고, 남은 두 버튼이 그 폭을 나눠 갖는다. */
+  .zg-detail .mobile-fix-footer [class^='btn'].btnNormal.jsGoReview { display: none; }
+
+  /* 품절 — 원본 노드는 삭제하지 않고 감춘다 (C6: 구매하기에는 품절 분기가 없다) */
+  .zg-detail .zg-bar__soldout {
+    display: none;
+    flex: 1.4 1 0;
+    height: var(--zg-bar-h);
+    line-height: var(--zg-bar-h);
+    text-align: center;
+    background: var(--zg-hair);
+    color: var(--zg-ink-3);
+    border-radius: var(--zg-r-xl);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: default;
+  }
+  .zg-detail .mobile-fix-footer.zg-bar--soldout .jsLayerBtn { display: none; }
+  .zg-detail .mobile-fix-footer.zg-bar--soldout .zg-bar__soldout { display: block; }
+  .zg-detail .mobile-fix-footer.zg-bar--soldout .zg-bar__sum { display: none; }
+  /* [13종] 판매 상품이 아닌 페이지(34·91·93)에서는 하단 고정바 자체를 내린다.
+     카페24가 인라인 두 버튼에 `displaynone` + 빈 `onclick` 을 준 상태를 detail-ui.js 가 읽어
+     `zg-bar--dead` 를 붙인다. 눌러도 아무 일도 안 하는 버튼을 화면 폭 가득 띄우지 않는다.
+     ⚠ DOM 은 그대로 둔다 — 리뷰수 훅이 이 안에 있다. */
+  .zg-detail .mobile-fix-footer.zg-bar--dead { display: none; }
+
+  /* 바만 내리면 「상품 금액 —」·「총 구매 금액 0원」·「구성을 선택해 주세요」가 그대로 남아
+     팔지 않는 페이지에 결제 UI 만 떠 있게 된다(QA 지적). 같이 내린다.
+     ⚠ `#freeShipGuide`(배송 진행바)와 상세 본문은 건드리지 않는다 — 안내 자체는 페이지의 목적이다. */
+  .zg-detail.zg-unsellable .zg-sum,
+  .zg-detail.zg-unsellable .zg-picked-head { display: none; }
+  /* 바텀시트가 열리면 시트 안 버튼과 중복되므로 3버튼 행만 접는다(금액 줄은 유지).
+     ⚠ 실렌더에서 리뷰 버튼만 2px 이 남았다 — `[class^='btn'].btnNormal.jsGoReview`(0,5,0) 의
+     테두리가 접힘 규칙(0,4,0)을 이겼기 때문이다. 변형 셀렉터를 명시해 (0,6,0) 으로 확정한다. */
+  .zg-detail.zg-sheet-open .mobile-fix-footer [class^='btn'],
+  .zg-detail.zg-sheet-open .mobile-fix-footer [class^='btn'].btnNormal,
+  .zg-detail.zg-sheet-open .mobile-fix-footer [class^='btn'].btnSubmit,
+  .zg-detail.zg-sheet-open .mobile-fix-footer [class^='btn'].btnNormal.jsGoReview {
+    opacity: 0;
+    /* 투명하기만 하면 **탭은 그대로 먹는다**. 바(z-index 10)가 시트(z-index auto)보다 위에
+       그려지므로, 시트가 열린 동안 바 자리를 누르면 보이지 않는 바 버튼이 탭을 가져간다.
+       실렌더에서 실제로 잡혔다(시트 열림 시 바 중앙의 최상단 요소 = 바 「구매하기」). */
+    pointer-events: none;
+    height: 0;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+    line-height: 0;
+    overflow: hidden;
+    border-width: 0;
+  }
+}
+
+/* [근거] 검정 CTA 위에서 UA 기본 포커스 링의 대비가 나쁘다 */
+/* 구매 컨트롤은 `<div>`/`<span>` 이라 UA 기본 포커스 링이 약하거나 없다.
+   런타임에 `tabindex` 를 얹었으므로(detail-ui.js) 링도 같이 보장한다. */
+.zg-detail .zg-opt:focus-visible,
+.zg-detail .zg-chip:focus-visible,
+.zg-detail [data-zg-kb]:focus-visible {
+  outline: 2px solid var(--zg-acc-deep);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------- 17. 토스트 */
+.zg-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(110px + env(safe-area-inset-bottom));
+  transform: translateX(-50%) translateY(8px);
+  z-index: 13;
+  max-width: calc(100vw - 40px);
+  padding: 11px 16px;
+  background: rgba(21, 22, 26, .93);
+  color: #fff;
+  border-radius: 999px;
+  font-family: "Pretendard Variable", "Apple SD Gothic Neo", -apple-system, sans-serif;
+  font-size: 12.5px;
+  line-height: 1.4;
+  word-break: keep-all;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s, transform .18s;
+}
+.zg-toast.zg-on { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ------------------------------------------- 18. 데스크톱 (≥1024px) */
+@media (min-width: 1024px) {
+  .zg-detail { padding-bottom: 0; }
+  /* R-10: 기준이 `.thumbnail__list > li` 로 옮겨졌다 — 데스크톱 상한도 같이 옮긴다 */
+  .zg-detail .xans-product-detail .imgArea .prdImg .thumbnail__list > li img { max-height: min(58vh, 560px); }
+  .zg-detail .xans-product-detail .headingArea h1.prd-name { font-size: clamp(26px, 2.2vw, 34px); }
+  .zg-detail .xans-product-detail .headingArea,
+  .zg-detail .productOption,
+  .zg-detail .detail-spec,
+  .zg-detail .zg-picked-head,
+  .zg-detail #totalProducts { padding-left: 0; padding-right: 0; }
+  .zg-detail .shipping-today,
+  .zg-detail #freeShipGuide,
+  .zg-detail .zg-sum,
+  .zg-detail .xans-product-detail .productSet { margin-left: 0; margin-right: 0; }
+  .zg-detail .infoArea-footer .productAction { padding: 0; }
+  .zg-detail .zg-guide { max-width: 760px; }
+  .zg-detail .zg-note { max-width: 760px; }
+  /* 접기 클램프 제거됨 (2026-09-11) */
+
+  /* 스크롤이 .infoArea 를 지나면 스킨이 .mobile-layer 를 화면 하단 가로 바로 바꾼다.
+     그 안에서도 합계가 한 줄로 들어가도록 압축한다 (원본 #totalPrice 는 계속 클립). */
+  .zg-detail .mobile-layer.fixed .infoArea-footer .zg-sum {
+    width: 230px;
+    margin: 0 24px 0 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+  .zg-detail .mobile-layer.fixed .infoArea-footer .zg-sum .zg-sum__row { padding: 1px 0; font-size: 12.5px; }
+  .zg-detail .mobile-layer.fixed .infoArea-footer .zg-sum .zg-sum__row--tot { margin-top: 2px; padding-top: 4px; }
+  .zg-detail .mobile-layer.fixed .infoArea-footer .zg-sum .zg-sum__row--tot .zg-sum__v { font-size: 19px; }
+  .zg-detail .mobile-layer.fixed .infoArea-footer .zg-sum .zg-sum__note { display: none; }
+  /* 데스크톱 하단 고정바는 만들지 않는다 — 스킨 `.mobile-layer.fixed` 가 그 역할이다 */
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   상단 구매 블록 — 인라인에서는 숨기고 구매 시트에서만 보인다
+   2026-09-11 개편 요건:
+     썸네일 > 리뷰 > 제목 > 옵션 > 추가 옵션 > 총구매금액 > 네이버페이 >
+     카카오페이 순서를 상단에서 걷어내고, 썸네일 다음 바로 상세페이지를 둔다.
+
+   ⚠ 지우면 안 된다. `.mobile-layer` 는 인라인 블록과 구매 시트가 **같은 DOM** 이다
+     (스킨이 스크롤에 맞춰 `.fixed` / `.on` 을 붙여 시트로 바꾼다).
+     마크업에서 제거하면 시트에도 옵션이 사라져 결제가 불가능해진다.
+     그래서 **인라인 상태에서만** 감춘다.
+   ══════════════════════════════════════════════════════════════════════════ */
+@media screen and (max-width: 767px) {
+  /* ⚠ 감출 노드는 `.opt-content` 다 — `.opt-content__pc` 가 아니다.
+     `.opt-content__pc`(제목·가격·리뷰)는 `.productOption`(옵션 카드)·
+     `.zg-picked-head`(선택한 구성)와 **형제**라, 그것만 감추면 옵션이 상단에 남는다.
+     실제 구조:
+       .opt-content > .opt-content__payment > .fix-pc-l
+         ├ .opt-content__pc   제목·가격·리뷰
+         ├ .productOption     옵션 카드
+         ├ .zg-picked-head    선택한 구성
+         └ #totalProducts     선택 목록
+     ⚠ `.opt-content` 도 쓸 수 없다 — 스킨이 두 곳에서 important 로 잠갔다
+       (`.opt-content{display:block!important}` · `.mobile-layer:not(.fixed) .opt-content{...!important}`).
+       이 파일은 새 important 를 쓰지 않는 것이 설계 규칙이라, 잠기지 않은
+       **`.fix-pc-l`** 을 감춘다. 네 덩어리가 전부 그 안에 있다. */
+  .zg-detail .mobile-layer:not(.on):not(.fixed) .fix-pc-l,
+  .zg-detail .mobile-layer:not(.on):not(.fixed) .infoArea-footer {
+    display: none;
+  }
+  /* 시트·하단바에서는 원래대로 되돌린다 */
+  .zg-detail .mobile-layer.on .fix-pc-l,
+  .zg-detail .mobile-layer.on .infoArea-footer,
+  .zg-detail .mobile-layer.fixed .fix-pc-l,
+  .zg-detail .mobile-layer.fixed .infoArea-footer {
+    display: block;
+  }
+  /* 상단이 비므로 썸네일과 상세 사이 여백만 남긴다 */
+  .zg-detail .mobile-layer:not(.on):not(.fixed) { margin: 0; padding: 0; }
+}
