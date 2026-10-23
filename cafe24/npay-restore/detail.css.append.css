@@ -96,3 +96,43 @@
  *   항상 감추려면 아래 한 줄의 주석을 풀면 된다:  .xans-product-detail .alpha_widget[data-code="8d644bd9"]{display:none;}
  * ==================================================================== */
 .xans-product-detail .alpha_widget[data-zg-empty="1"] { display: none; }
+
+/* ====================================================================
+ * R-18 구매 시트: 합계·버튼 블록(.infoArea-footer)을 스크롤 흐름 안에 sticky 로 — 2026-10-23
+ * 영상(2026-10-23 15:41, product_no=63) 실측: 열린 시트 ~557px 중 아래 ~250px(합계 118 + 버튼 150)이
+ * `position:absolute` 블록이라 스크롤 창은 위쪽 ~285px 뿐이다. 그 블록은 R-13 이 `touch-action:none` 으로
+ * 막아 둔 "죽은 구역"(끌어도 아무 일도 안 생김)이고, 남은 창이 작아 스와이프가 번번이 끝에 걸려 튕겨 돌아온다.
+ * 원인(구조): 두 블록이 `.mobile-layer__inner`(스크롤 통) 안에 있지만 `position:absolute` 의 포함 블록이
+ *   `.mobile-layer` 라 WebKit 이 그 위의 제스처를 통이 아니라 본문 스크롤로 보낸다 → 그래서 none 으로 막았었다.
+ * 조치: 둘을 감싼 `.infoArea-footer`(통의 마지막 자식)를 `position:sticky; bottom:0` 으로 두고 안의 두 블록은
+ *   보통 흐름(static)으로 되돌린다. (sticky 는 부모 상자 안에서만 움직이므로 블록 각각이 아니라 **통 직속 자식**인
+ *   footer 에 걸어야 내용 전체 위를 떠다닌다 — 블록에 직접 걸면 부모(footer) 높이만큼만 움직여 겹쳤다, 실측.)
+ *   - 내용이 길면 통 바닥에 붙어 있고(지금과 같은 모습), 끝까지 내리면 제자리에 놓인다
+ *   - 흐름 안 요소라 그 위에서 끌어도 통이 스크롤된다 → 죽은 구역이 없어지고 none 도 필요 없다
+ *   - 내용 아래를 비워 두던 padding-bottom(--zg-tub-pb) 도 필요 없다
+ *   - 시트 높이를 70vh → 84vh 로 키워 스크롤 창을 넓힌다
+ * 특이도: 스킨 `.xans-product-detail:not(#main-prd-detail) .mobile-layer.fixed .productAction{position:absolute}` 가
+ *   (1,4,0) 이라 `#contents` 를 앞에 붙여 (1,5,0) 으로 넘는다. !important 없음. fitSheet 의 --zg-act-h 는 더 쓰지 않는다.
+ * ==================================================================== */
+@media (max-width: 1023px) {
+  /* 스킨 `.mobile-layer.fixed .opt-content{overflow:auto;max-height:400px}` 가 시트 안에 **두 번째 스크롤 통**을 만든다
+   * (실측: .opt-content sh 518 / ch 400 + .mobile-layer__inner sh 685 / ch 465). 통이 두 겹이면 iOS 는 안쪽 통이 끝날 때
+   * 관성을 끊고 바깥 통으로 넘기므로 "중간에 멈춤"이 된다. 안쪽 통을 풀어 통을 하나(.mobile-layer__inner)로 만든다. */
+  #contents .zg-detail .mobile-layer.fixed .opt-content { max-height: none; overflow: visible; }
+  #contents .zg-detail .mobile-layer.fixed .mobile-layer__inner { max-height: 84vh; }
+  #contents .zg-detail .mobile-layer.fixed.on .mobile-layer__inner { padding-bottom: 0; }
+  #contents .zg-detail .mobile-layer.fixed.on .infoArea-footer {
+    display: block; padding: 0; margin: 0;
+    position: sticky; bottom: 0; z-index: 3;
+    background: var(--zg-bg);
+  }
+  #contents .zg-detail .mobile-layer.fixed.on .infoArea-footer .zg-sum {
+    position: static; width: auto; margin: 0; padding: 9px var(--zg-pad-x) 0; border-top: 1px solid var(--zg-ink);
+  }
+  #contents .zg-detail .mobile-layer.fixed.on .infoArea-footer .productAction { position: static; width: auto; }
+  /* R-13 의 죽은 구역 해제 — 이제 흐름 안 요소라 그 위에서도 통이 스크롤된다 */
+  #contents .zg-detail .mobile-layer.fixed.on .infoArea-footer .zg-sum,
+  #contents .zg-detail .mobile-layer.fixed.on .infoArea-footer .zg-sum *,
+  #contents .zg-detail .mobile-layer.fixed.on .infoArea-footer .productAction,
+  #contents .zg-detail .mobile-layer.fixed.on .infoArea-footer .productAction * { touch-action: auto; }
+}
