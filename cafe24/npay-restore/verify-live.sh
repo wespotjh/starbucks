@@ -11,7 +11,8 @@ js=$(grep -o 'src="/ind-script/optimizer_user[^"]*type=js[^"]*"'  "$tmp/page.htm
 curl -sS -A "$UA" "https://zengenetics.co.kr$css" -o "$tmp/user.css"
 curl -sS -A "$UA" "https://zengenetics.co.kr$js"  -o "$tmp/user.js"
 ok=0
-if grep -q "R-12b 네이버페이 복원" "$tmp/user.css"; then echo "[OK] detail.css  : R-12b 블록 있음"; else echo "[--] detail.css  : R-12b 블록 없음 (아직 미적용이거나 되돌아감)"; ok=1; fi
+# CSS 번들은 주석이 제거돼 내려오므로 주석이 아니라 R-12b 블록의 셀렉터로 확인한다
+if grep -q 'NaverChk[^{]*npay_btn_link.npay_btn_pay' "$tmp/user.css"; then echo "[OK] detail.css  : R-12b 블록 있음 (npay 버튼 규칙 확인)"; else echo "[--] detail.css  : R-12b 블록 없음 (아직 미적용이거나 되돌아감)"; ok=1; fi
 if grep -q "function dressNaverPay" "$tmp/user.js"; then echo "[OK] detail-ui.js: dressNaverPay() 있음"; else echo "[--] detail-ui.js: dressNaverPay() 없음 (아직 미적용이거나 되돌아감)"; ok=1; fi
 if grep -q "APPPAY_SEL = '#appPaymentButtonBox, #kakao-checkout-button'" "$tmp/user.js"; then echo "[OK] detail-ui.js: 차단 셀렉터에서 네이버 제외됨"; else echo "[--] detail-ui.js: 예전 차단 셀렉터(네이버 포함) 그대로"; ok=1; fi
 echo "CSS 번들 $(echo "$css" | grep -o 't=[0-9]*')  JS 번들 $(echo "$js" | grep -o 't=[0-9]*')"
