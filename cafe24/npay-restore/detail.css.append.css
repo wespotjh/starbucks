@@ -1,0 +1,51 @@
+/* ====================================================================
+ * R-12b 네이버페이 복원 — 2026-10-23
+ * ds/css/detail.css 맨 끝에 그대로 붙인다.
+ *
+ * 배치: 「장바구니 · 구매하기」 줄 아래에 네이버페이 공식 버튼을 **전폭 한 줄**로 둔다.
+ *   PC   : .infoArea-footer .productAction .buy-btn-wrap 2번째 줄 (높이 --zg-bar-h 54px, 모서리 --zg-r-xl 13px)
+ *   모바일: 같은 노드가 구매 시트(.mobile-layer.fixed.on) 안에서 장바구니·구매하기(54px) 밑에 같은 높이로 붙는다.
+ *          하단 고정바(.mobile-fix-footer)에는 넣지 않는다 — 옵션을 고른 뒤에만 결제가 성립한다.
+ *
+ * 선택자 규칙
+ *   - 네이버 컨테이너 id 전체를 리터럴로 쓰지 않는다 (A군 훅 보존 검사 오탐). 접두사 [id^="NaverChk"] 로 잡는다.
+ *   - moa 스킨의 `#…:not(:empty){width:49%;margin:10px 0 0}` 는 id 특이도라 클래스만으로는 못 넘는다.
+ *     → 조상 `#contents` 를 앞에 붙여 (1,3,x) 로 이긴다. !important 를 새로 쓰지 않는다.
+ *   - 네이버 위젯 내부(button2.css)는 **전부 !important** 다. 제3자 CSS 상쇄는 같은 무게로만 가능하므로
+ *     이 블록의 `.npay_*` 규칙에 한해 !important 를 허용한다 (detail.css "새 important 금지" 의 유일한 예외).
+ * ==================================================================== */
+
+/* 버튼 블록을 두 줄로: 1줄 장바구니·구매하기(기존), 2줄 네이버페이(전폭) */
+.zg-detail .productAction .buy-btn-wrap{flex-wrap:wrap;row-gap:10px;}
+
+/* 카페24 앱이 주입한 컨테이너 — 2줄 전폭. 인라인 float/margin/padding 은 detail-ui.js 가 걷는다 */
+#contents .zg-detail .productAction .buy-btn-wrap > [id^="NaverChk"],
+#contents .zg-detail .productAction .buy-btn-wrap > [id^="NaverChk"]:not(:empty){
+  flex:0 0 100%;width:100%;max-width:none;margin:0;padding:0;float:none;clear:none;text-align:left;line-height:0;
+}
+/* 아직 렌더 전(빈 컨테이너)·품절 상태에서는 자리를 차지하지 않는다 */
+#contents .zg-detail .productAction .buy-btn-wrap > [id^="NaverChk"]:empty,
+#contents .zg-detail.zg-unsellable .productAction .buy-btn-wrap > [id^="NaverChk"]{display:none;}
+/* 앱이 복제해 둔 빈 컨테이너(하단바·orderFixArea) — flex gap 만 만든다. JS 와 이중 안전 */
+.zg-detail .mobile-fix-footer > [id^="NaverChk"],
+.zg-detail .mobile-fix-footer > [id^="appPayment"],
+.zg-detail #orderFixArea [id^="NaverChk"]{display:none;}
+
+/* ── 네이버 위젯 내부: 라벨 문구·찜·이벤트 띠를 걷고, 「N pay 구매」 공식 버튼만 전폭으로 ── */
+.zg-detail .productAction [id^="NaverChk"] .npay_storebtn_bx{display:block !important;width:100% !important;height:auto !important;}
+.zg-detail .productAction [id^="NaverChk"] .npay_button_box{width:auto !important;height:auto !important;margin:0 !important;padding:0 !important;border:0 !important;}
+.zg-detail .productAction [id^="NaverChk"] .npay_button{padding:0 !important;}
+.zg-detail .productAction [id^="NaverChk"] .npay_text,
+.zg-detail .productAction [id^="NaverChk"] .npay_event,
+.zg-detail .productAction [id^="NaverChk"] .npay_btn_item.btn_width{display:none !important;}
+.zg-detail .productAction [id^="NaverChk"] .npay_btn_list{width:100% !important;}
+.zg-detail .productAction [id^="NaverChk"] .npay_btn_item{height:auto !important;}
+/* 공식 스프라이트(63px 폭, 1프레임 글리프 y≈11.5~23px)를 버튼 세로 중앙에. 2프레임은 y≈48.5px 부터라
+ * 54px 박스 + 10px 오프셋에서는 58.5px → 박스 밖 */
+.zg-detail .productAction [id^="NaverChk"] .npay_btn_link.npay_btn_pay{
+  box-sizing:border-box !important;width:100% !important;height:var(--zg-bar-h,54px) !important;margin:0 !important;
+  border:1px solid #00c851 !important;border-radius:var(--zg-r-xl,13px) !important;background-color:#00de5a !important;
+  background-position:50% 10px !important;cursor:pointer;
+}
+.zg-detail .productAction [id^="NaverChk"] .npay_btn_link.npay_btn_pay:hover{background-color:#00d254 !important;}
+/* 구매 시트(.mobile-layer.fixed.on) 안의 장바구니·구매하기도 --zg-bar-h(54px) 라 별도 분기가 없다 (실측 2026-10-23) */
