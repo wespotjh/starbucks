@@ -42,10 +42,29 @@
 .zg-detail .productAction [id^="NaverChk"] .npay_btn_item{height:auto !important;}
 /* 공식 스프라이트(63px 폭, 1프레임 글리프 y≈11.5~23px)를 버튼 세로 중앙에. 2프레임은 y≈48.5px 부터라
  * 54px 박스 + 10px 오프셋에서는 58.5px → 박스 밖 */
+/* 네이버 위젯은 기기별로 마크업이 다르다 (실측 2026-10-23):
+ *   PC(button2.css, npay_type_A_2)  : <a class="npay_btn_pay"> 빈 앵커 + 배경 스프라이트(63px, 글리프 y≈11.5~23px)
+ *   모바일(mbutton2.css, npay_type_MA_1): <a class="npay_btn_pay"><span class="npay_logo">(46×40 스프라이트)</span>구매</a>
+ *                                        줄높이 40px 고정이라 54px 버튼에서는 글자가 위로 몰린다
+ * → 앵커를 flex 로 바꿔 자식(로고·글자)을 세로 중앙에 둔다. PC 변형은 배경 위치(10px)로 중앙을 맞춘다 */
 .zg-detail .productAction [id^="NaverChk"] .npay_btn_link.npay_btn_pay{
-  box-sizing:border-box !important;width:100% !important;height:var(--zg-bar-h,54px) !important;margin:0 !important;
+  box-sizing:border-box !important;width:100% !important;height:var(--zg-bar-h,54px) !important;margin:0 !important;padding:0 !important;
+  display:flex !important;align-items:center !important;justify-content:center !important;line-height:1 !important;
   border:1px solid #00c851 !important;border-radius:var(--zg-r-xl,13px) !important;background-color:#00de5a !important;
   background-position:50% 10px !important;cursor:pointer;
 }
+.zg-detail .productAction [id^="NaverChk"] .npay_btn_link.npay_btn_pay .npay_logo{flex:0 0 auto;vertical-align:middle !important;}
 .zg-detail .productAction [id^="NaverChk"] .npay_btn_link.npay_btn_pay:hover{background-color:#00d254 !important;}
 /* 구매 시트(.mobile-layer.fixed.on) 안의 장바구니·구매하기도 --zg-bar-h(54px) 라 별도 분기가 없다 (실측 2026-10-23) */
+
+/* ====================================================================
+ * R-14 모바일 하단 고정바 바닥 여백 — 2026-10-23
+ * 사파리처럼 하단 툴바가 있는 브라우저에서는 safe-area 가 0 이라 버튼이 화면 바닥에 바짝 붙는다
+ * (실기기 확인). 바닥에 16px 를 항상 두고, 노치 기기에서는 safe-area 를 그 위에 더한다.
+ * 바가 16px 커진 만큼 스크롤 예약(body padding)과 토스트 위치도 16px 올려 원래 설계(여유 18px)를 유지한다.
+ * ==================================================================== */
+.zg-detail .mobile-fix-footer{padding-bottom:calc(16px + env(safe-area-inset-bottom, 0px));}
+@media (max-width: 1023px) {
+  html body { padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
+}
+.zg-toast{bottom:calc(126px + env(safe-area-inset-bottom, 0px));}
